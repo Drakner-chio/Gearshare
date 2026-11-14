@@ -9,6 +9,7 @@
     height before older drops are hidden, how long drops stay
   - group gear: size
   - minimap button on/off, lock windows, reset window positions, test drop
+- **Clear** (and `/gs clear`) also closes the loot window.
 
 ## v0.1.0
 

@@ -192,9 +192,11 @@ function Loot:Check(itemString)
     Refresh()
 end
 
+-- Empties the list; an empty loot window has nothing to show, so it closes
 function Loot:Clear()
     wipe(Loot.drops)
     wipe(Loot.byKey)
+    if ns.LootWindow and ns.LootWindow.Close then ns.LootWindow:Close() end
     Refresh()
 end
 

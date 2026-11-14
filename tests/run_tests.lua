@@ -247,8 +247,15 @@ check(g:find("2 without GearShare data", 1, true), "Jaina and Varian sent no gea
 
 ---------------------------------------------------------------------------
 STEP("slash commands and the test drop")
-Loot:Clear()
+ns.LootWindow:Open()
+Click((function()
+    for _, f in ipairs(ALL_FRAMES) do
+        local fs = rawget(f, "__fs")
+        if fs and fs.__text == "Clear" then return f end
+    end
+end)())
 check(#Loot.drops == 0, "cleared")
+check(not GearShareLootFrame:IsShown(), "and the empty window closed")
 SlashCmdList.GEARSHARE("test")
 RunTimers(1)
 check(#Loot.drops == 1 and Loot.drops[1].demo and Loot.drops[1].results.Alex, "a test drop with my own verdict")

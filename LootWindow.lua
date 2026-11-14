@@ -237,6 +237,10 @@ function W:Open()
     W:Paint()
 end
 
+function W:Close()
+    if frame then frame:Hide() end
+end
+
 function W:Toggle()
     if frame and frame:IsShown() then frame:Hide() else W:Open() end
 end
