@@ -35,8 +35,9 @@ Made for **World of Warcraft: Forever**. English and German.
 | `/gs auto on/off` | open the loot window by itself when something drops |
 | `/gs clear` | empty the loot window |
 | `/gs test` | a made-up drop with made-up members, to try it out alone |
+| `/gs options` | settings: window sizes, minimap button, lock windows, … |
 
-Left click on the addon button in the minimap corner opens the loot window, right click the group gear.
+Minimap button: left click opens the loot window, right click the group gear, shift-click the settings.
 
 ## Source
 

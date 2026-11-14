@@ -261,6 +261,40 @@ SlashCmdList.GEARSHARE("")
 check(not GearShareLootFrame:IsShown(), "/gs closes the window")
 
 ---------------------------------------------------------------------------
+STEP("settings, minimap button")
+check(GearShareMinimapButton and GearShareMinimapButton:IsShown(), "the minimap button is there")
+check(#SETTINGS_CATEGORIES == 1 and SETTINGS_CATEGORIES[1].name == "GearShare", "listed in the game's AddOns settings")
+Click(GearShareMinimapButton, "LeftButton")
+check(GearShareLootFrame:IsShown(), "left click: loot window")
+Click(GearShareMinimapButton, "RightButton")
+check(GearShareGroupFrame:IsShown() == false, "right click: group gear (was open, now closed)")
+SHIFT = true
+Click(GearShareMinimapButton, "LeftButton")
+SHIFT = false
+check(GearShareOptionsFrame and GearShareOptionsFrame:IsShown(), "shift click: settings")
+local opts = AllText(GearShareOptionsFrame)
+check(opts:find("100 %", 1, true) and opts:find("15 min", 1, true), "sliders show their values")
+-- find the controls by their label
+local function control(label)
+    for _, f in ipairs(ALL_FRAMES) do
+        local l = rawget(f, "label"); if l and l.__text == label then return f end
+    end
+end
+Click(control("Minimap button"))
+check(ns.db.minimapButton == false and not GearShareMinimapButton:IsShown(), "minimap button off")
+SlashCmdList.GEARSHARE("minimap on")
+check(GearShareMinimapButton:IsShown(), "and on again with /gs minimap on")
+Click(control("Lock windows (no dragging)"))
+check(ns.db.locked == true, "windows locked")
+local sliders = {}
+for _, f in ipairs(ALL_FRAMES) do if f.__kind == "Slider" then sliders[#sliders + 1] = f end end
+sliders[1]:SetValue(1.25)
+check(near(ns.db.lootScale, 1.25) and near(GearShareLootFrame.__scale, 1.25), "loot window size")
+sliders[4]:SetValue(0.8)
+check(near(ns.db.groupScale, 0.8) and near(GearShareGroupFrame.__scale, 0.8), "group window size")
+check(AllText(GearShareOptionsFrame):find("125 %", 1, true), "shown in percent")
+
+---------------------------------------------------------------------------
 STEP("German")
 LOCALE = "deDE"
 local before = #ALL_FRAMES

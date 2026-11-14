@@ -16,6 +16,12 @@ local DEFAULTS = {
     autoShow = true,       -- open the loot window when something drops
     onlyUsable = false,    -- hide group members who can't use the drop
     keepMinutes = 15,      -- how long a drop stays in the window
+    lootScale = 1,         -- size of the loot window
+    lootMaxHeight = 600,   -- the loot window grows up to this, then hides older drops
+    groupScale = 1,        -- size of the group gear window
+    locked = false,        -- windows can't be dragged
+    minimapButton = true,
+    minimapAngle = 215,
 }
 
 ---------------------------------------------------------------------------
@@ -142,6 +148,8 @@ local function Help()
     print("  /gs auto on|off  – " .. L["open the loot window by itself when something drops"])
     print("  /gs clear  – " .. L["empty the loot window"])
     print("  /gs test  – " .. L["a made-up drop with made-up members, to try the window"])
+    print("  /gs options  – " .. L["settings: size, minimap button, ..."])
+    print("  /gs minimap on|off  – " .. L["show or hide the minimap button"])
 end
 
 local function OnOff(arg, current)
@@ -170,6 +178,11 @@ SlashCmdList.GEARSHARE = function(msg)
             return
         end
         ns.Loot:Check(itemString)
+    elseif cmd == "options" or cmd == "config" or cmd == "settings" then
+        ns.Options:Toggle()
+    elseif cmd == "minimap" then
+        ns.db.minimapButton = OnOff(rest:lower(), ns.db.minimapButton)
+        ns.UpdateMinimapButton()
     elseif cmd == "auto" then
         ns.db.autoShow = OnOff(rest:lower(), ns.db.autoShow)
         ns.Print(ns.db.autoShow and "The loot window opens by itself when something drops." or "The loot window only opens with /gs.")
@@ -188,6 +201,15 @@ SlashCmdList.GEARSHARE = function(msg)
 end
 
 -- Addon list button (the compartment in the minimap corner)
-function GearShare_OnCompartmentClick(_, button)
-    if button == "RightButton" then ns.GroupWindow:Toggle() else ns.LootWindow:Toggle() end
+-- Clicks on the minimap button and the addon list button
+function ns.HandleClick(button)
+    if IsShiftKeyDown and IsShiftKeyDown() then
+        ns.Options:Toggle()
+    elseif button == "RightButton" then
+        ns.GroupWindow:Toggle()
+    else
+        ns.LootWindow:Toggle()
+    end
 end
+
+function GearShare_OnCompartmentClick(_, button) ns.HandleClick(button) end

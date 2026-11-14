@@ -88,6 +88,23 @@ end
 
 UIParent = newObj("Frame", "UIParent")
 GameTooltip = newObj("GameTooltip", "GameTooltip")
+Minimap = newObj("Frame", "Minimap")
+Minimap.__w, Minimap.__h = 140, 140
+function Methods:GetCenter() return 500, 400 end
+function Methods:GetEffectiveScale() return 1 end
+function Methods:SetScale(s) self.__scale = s end
+function Methods:SetValue(v)
+    self.__value = v
+    if self.__scripts.OnValueChanged then self.__scripts.OnValueChanged(self, v) end
+end
+function GetCursorPosition() return 600, 400 end
+SHIFT = false
+function IsShiftKeyDown() return SHIFT end
+SETTINGS_CATEGORIES = {}
+Settings = {
+    RegisterCanvasLayoutCategory = function(panel, name) return { panel = panel, name = name } end,
+    RegisterAddOnCategory = function(c) SETTINGS_CATEGORIES[#SETTINGS_CATEGORIES + 1] = c end,
+}
 UISpecialFrames = {}
 SlashCmdList = {}
 RAID_CLASS_COLORS = setmetatable({}, { __index = function() return { r = 1, g = 1, b = 1 } end })

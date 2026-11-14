@@ -43,9 +43,12 @@ Everyone in the group needs GearShare. Pawn is strongly recommended.
 | `/gs auto on\|off` | open the loot window by itself when something drops |
 | `/gs clear` | empty the loot window |
 | `/gs test` | a made-up drop with made-up members, to try the window |
+| `/gs options` | settings: window sizes, minimap button, lock windows, … |
+| `/gs minimap on\|off` | show or hide the minimap button |
 
-The addon list button (in the minimap corner): left click opens the loot window,
-right click opens the group gear.
+Minimap button and addon list button: left click opens the loot window, right click
+the group gear, shift-click the settings. The settings are also under
+*Options → AddOns → GearShare*.
 
 ## Language
 

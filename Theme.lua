@@ -152,7 +152,7 @@ function T.Window(name, title, width, height, posKey)
     Fill(head, C.head)
     head:EnableMouse(true)
     head:RegisterForDrag("LeftButton")
-    head:SetScript("OnDragStart", function() f:StartMoving() end)
+    head:SetScript("OnDragStart", function() if not (ns.db and ns.db.locked) then f:StartMoving() end end)
     head:SetScript("OnDragStop", function()
         f:StopMovingOrSizing()
         local point, _, rel, x, y = f:GetPoint()
@@ -192,6 +192,12 @@ function T.Window(name, title, width, height, posKey)
         end
     end
 
+    -- Size from the settings (scaleKey in GearShareDB, 1 = 100 %)
+    function f:ApplyScale(scaleKey)
+        local s = scaleKey and ns.db and ns.db[scaleKey] or 1
+        self:SetScale(math.max(0.5, math.min(2, s)))
+    end
+
     -- Escape closes it
     if name and UISpecialFrames then table.insert(UISpecialFrames, name) end
     f:Hide()
@@ -207,4 +213,98 @@ end
 
 function T.Hex(color)
     return ("%02x%02x%02x"):format(math.floor(color[1] * 255 + 0.5), math.floor(color[2] * 255 + 0.5), math.floor(color[3] * 255 + 0.5))
+end
+
+---------------------------------------------------------------------------
+-- Settings widgets
+---------------------------------------------------------------------------
+-- On/off switch: b:SetOn(bool) paints it, b:IsOn() reads it; clicks call onChange(on)
+function T.Switch(parent, text, x, y, get, set)
+    local b = CreateFrame("Button", nil, parent)
+    b:SetSize(32, 16)
+    b:SetPoint("TOPLEFT", x, y)
+    local track = b:CreateTexture(nil, "BACKGROUND")
+    track:SetAllPoints()
+    local knob = b:CreateTexture(nil, "ARTWORK")
+    knob:SetSize(12, 12)
+    function b:SetOn(on)
+        self.on = on and true or false
+        track:SetColorTexture(unpack(self.on and C.accentDim or { 0.19, 0.20, 0.23, 1 }))
+        knob:SetColorTexture(unpack(self.on and C.accent or { 0.55, 0.57, 0.62, 1 }))
+        knob:ClearAllPoints()
+        knob:SetPoint("LEFT", self, "LEFT", self.on and 18 or 2, 0)
+    end
+    function b:IsOn() return self.on end
+    local label = Text(parent, text, 13)
+    label:SetPoint("LEFT", b, "RIGHT", 10, 0)
+    local w = label.GetStringWidth and label:GetStringWidth()
+    b:SetHitRectInsets(0, -(10 + math.ceil(type(w) == "number" and w or 0)), -4, -4)
+    b:SetScript("OnClick", function(self)
+        set(not self:IsOn())
+        self:SetOn(get())
+    end)
+    function b.Refresh() b:SetOn(get()) end
+    b.label = label
+    b:Refresh()
+    return b
+end
+
+-- Slider with its title on the left and the value (violet) on the right
+function T.Slider(parent, text, x, y, width, get, set, min, max, step, fmt)
+    step, fmt = step or 1, fmt or "%d"
+    local function show(v) return type(fmt) == "function" and fmt(v) or fmt:format(v) end
+    local title = Text(parent, text, 13)
+    title:SetPoint("TOPLEFT", x, y)
+    local value = Text(parent, "", 13, C.accent, true)
+    value:SetPoint("TOPRIGHT", parent, "TOPLEFT", x + width, y)
+    value:SetJustifyH("RIGHT")
+
+    local s = CreateFrame("Slider", nil, parent)
+    s:SetOrientation("HORIZONTAL")
+    s:SetSize(width, 14)
+    s:SetPoint("TOPLEFT", x, y - 20)
+    s:SetHitRectInsets(0, 0, -6, -6)
+    local track = s:CreateTexture(nil, "BACKGROUND")
+    track:SetHeight(2)
+    track:SetPoint("LEFT"); track:SetPoint("RIGHT")
+    track:SetColorTexture(0.19, 0.20, 0.23, 1)
+    local thumb = s:CreateTexture(nil, "OVERLAY")
+    thumb:SetSize(10, 10)
+    thumb:SetColorTexture(unpack(C.text))
+    s:SetThumbTexture(thumb)
+    local fill = s:CreateTexture(nil, "ARTWORK")
+    fill:SetHeight(2)
+    fill:SetPoint("LEFT", track, "LEFT")
+    fill:SetPoint("RIGHT", thumb, "CENTER")
+    fill:SetColorTexture(unpack(C.accent))
+    s:SetMinMaxValues(min, max)
+    s:SetValueStep(step)
+    if s.SetObeyStepsOnDrag then s:SetObeyStepsOnDrag(true) end
+    s:SetScript("OnValueChanged", function(_, v)
+        v = math.floor(v / step + 0.5) * step
+        value:SetText(show(v))
+        if get() ~= v then set(v) end
+    end)
+    function s.Refresh()
+        s:SetValue(get())
+        value:SetText(show(get()))
+    end
+    s:Refresh()
+    return s
+end
+
+-- A card: panel with a small uppercase title and a short violet mark
+function T.Card(parent, title, x, y, w, h)
+    local f = CreateFrame("Frame", nil, parent)
+    f:SetPoint("TOPLEFT", x, y)
+    f:SetSize(w, h)
+    Fill(f, C.card)
+    Border(f, C.line)
+    local mark = f:CreateTexture(nil, "ARTWORK")
+    mark:SetSize(2, 10)
+    mark:SetPoint("TOPLEFT", 12, -11)
+    mark:SetColorTexture(unpack(C.accent))
+    local t = T.Caption(f, title)
+    t:SetPoint("TOPLEFT", 20, -10)
+    return f
 end

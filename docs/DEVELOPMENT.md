@@ -9,6 +9,7 @@
 | `Comm.lua` | addon messages (queue that waits for the end of combat and retries) |
 | `Loot.lua` | drops, verdicts, the ranking, posting to chat, `/gs test` |
 | `LootWindow.lua`, `GroupWindow.lua` | the two windows |
+| `Options.lua` | settings window, minimap button, entry in the game's AddOns settings |
 | `Theme.lua` | the look (same style as Gatherline, violet accent) |
 | `Locale*.lua` | English keys, German translations |
 

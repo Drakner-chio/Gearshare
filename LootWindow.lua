@@ -10,7 +10,6 @@ ns.LootWindow = W
 local WIDTH = 360
 local ROW_H = 18
 local HEAD_H = 40
-local MAX_HEIGHT = 600
 local frame, body, empty, more
 local cards = {}
 
@@ -162,6 +161,7 @@ end
 local function Build()
     frame = T.Window("GearShareLootFrame", "Loot", WIDTH, 200, "lootPos")
     frame:RestorePosition("RIGHT", -260, 60)
+    frame:ApplyScale("lootScale")
 
     body = CreateFrame("Frame", nil, frame)
     body:SetPoint("TOPLEFT", 10, -38)
@@ -214,7 +214,7 @@ function W:Paint()
         card:ClearAllPoints()
         card:SetPoint("TOPLEFT", body, "TOPLEFT", 0, -y)
         local h = PaintCard(card, d)
-        if full or (y + h > MAX_HEIGHT and shown > 0) then
+        if full or (y + h > ((ns.db and ns.db.lootMaxHeight) or 600) and shown > 0) then
             full = true
             card:Hide()
         else
@@ -239,6 +239,14 @@ end
 
 function W:Toggle()
     if frame and frame:IsShown() then frame:Hide() else W:Open() end
+end
+
+-- After a setting changed (size, height, position reset)
+function W:ApplySettings(resetPosition)
+    if not frame then return end
+    frame:ApplyScale("lootScale")
+    if resetPosition then frame:RestorePosition("RIGHT", -260, 60) end
+    if frame:IsShown() then W:Paint() end
 end
 
 function W:IsShown() return frame and frame:IsShown() end

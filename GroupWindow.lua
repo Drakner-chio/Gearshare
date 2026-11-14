@@ -62,6 +62,7 @@ end
 local function Build()
     frame = T.Window("GearShareGroupFrame", "Group gear", 400, 300, "groupPos")
     frame:RestorePosition("CENTER", 0, 40)
+    frame:ApplyScale("groupScale")
 
     grid = CreateFrame("Frame", nil, frame)
     grid:SetPoint("TOPLEFT", 10, -36)
@@ -224,4 +225,10 @@ end
 function W:Toggle()
     if not frame then Build() end
     if frame:IsShown() then frame:Hide() else frame:Show(); W:Paint() end
+end
+
+function W:ApplySettings(resetPosition)
+    if not frame then return end
+    frame:ApplyScale("groupScale")
+    if resetPosition then frame:RestorePosition("CENTER", 0, 40) end
 end

@@ -22,3 +22,4 @@ Comm.lua
 Loot.lua
 LootWindow.lua
 GroupWindow.lua
+Options.lua
