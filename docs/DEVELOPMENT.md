@@ -19,7 +19,7 @@
 |---|---|
 | `H^<protocol>^<version>` | hello. Everyone answers with their gear |
 | `G^<slot>:<itemID>:<ilvl>:<score>;…` | (part of) the sender's gear. `score` = best Pawn score, empty without Pawn |
-| `E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>` | the sender's verdict on a drop |
+| `E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>^<bis>` | the sender's verdict on a drop; `bis` = rank on their Naowh BiS list (since 0.2.0, older versions send 7 fields) |
 | `C^<item>` | please rate this item (`/gs check`) |
 
 `<item>` is an item string with unique ID, level and spec removed, so it's the
@@ -32,6 +32,14 @@ Status: `U` upgrade, `E` empty slot, `S` no upgrade, `X` can't use (`reason`
 `PawnGetItemData`, `PawnGetSingleValueFromItem`, `PawnIsScaleVisible`,
 `PawnGetScaleLocalizedName`, `PawnIsArmorBestTypeForPlayer`, `PawnCommon.Scales`,
 `PawnIsInitialized` (all from Pawn 2.14, which declares interface 16001).
+
+## Naowh Forever functions used
+
+From the global `NaowhForever` (addon NaowhForever_BiS): `IsBisItem(itemID)` (rank on the
+BiS list, nil when off or not on it) and `StatWeights.For`, `.ActiveSpec`, `.Spec`, `.Stats`,
+`.Worth`, `.DpsShare`, `.Usable`. Naowh's own upgrade percent (`StatWeights.Gain`) is over the
+whole character, so GearShare doesn't use it: it takes `Worth` of the new item and of what is
+worn in the slot, like Pawn's values.
 
 ## Releasing
 

@@ -84,4 +84,15 @@ ns.TRANSLATIONS.deDE = {
     ["Drag: move this button"] = "Ziehen: Knopf verschieben",
     ["settings: size, minimap button, ..."] = "Einstellungen: Größe, Minimap-Knopf, …",
     ["show or hide the minimap button"] = "Minimap-Knopf zeigen oder verstecken",
+
+    -- Bewertung, Naowh Forever
+    ["Rating"] = "Bewertung",
+    ["Rate drops with"] = "Drops bewerten mit",
+    ["Automatic"] = "Automatisch",
+    ["found"] = "gefunden",
+    ["not found"] = "nicht gefunden",
+    ["Pawn: %s  ·  Naowh Stat Weights: %s"] = "Pawn: %s  ·  Naowh-Stat-Gewichtungen: %s",
+    ["Pawn when it is installed, otherwise Naowh Forever's Stat Weights, otherwise the item level."] = "Pawn, wenn es installiert ist, sonst die Stat-Gewichtungen von Naowh Forever, sonst das Itemlevel.",
+    ["The stat weights of Naowh Forever's BiS List for your spec. GearShare compares the item with what you wear in its slot, like with Pawn, so everyone's numbers fit one ranking."] = "Die Stat-Gewichtungen aus Naowh Forevers BiS-Liste für deine Spezialisierung. GearShare vergleicht das Item wie bei Pawn mit dem, was du im Slot trägst, damit alle Zahlen in eine Rangliste passen.",
+    ["%d. pick"] = "%d. Wahl",
 }

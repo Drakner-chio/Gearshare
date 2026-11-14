@@ -249,6 +249,35 @@ function RemovePawn()
     PawnIsScaleVisible, PawnIsArmorBestTypeForPlayer = nil, nil
 end
 
+---------------------------------------------------------------------------
+-- A fake Naowh Forever (BiS List and Stat Weights)
+---------------------------------------------------------------------------
+BIS = {}   -- [itemID] = rank on my BiS list
+function InstallNaowh()
+    NaowhForever = {
+        IsBisItem = function(id) return BIS[id] end,
+        StatWeights = {
+            For = function(key) return { str = 1 } end,
+            ActiveSpec = function() return "arms-warrior" end,
+            Spec = function(key) return { name = "Arms" } end,
+            Stats = function(link)
+                local id = IdOf(link)
+                if NOT_LOADED[id] or not ITEMS[id] then return nil end
+                return { id = id }
+            end,
+            Worth = function(stats, weights, share)
+                local it = ITEMS[stats.id]
+                local v = it.naowh or (it.values and it.values.A) or 0
+                if it.equipLoc == "INVTYPE_WEAPON" then v = v * (share > 0 and share or 1) end
+                return v
+            end,
+            DpsShare = function(slot) return slot == 17 and 0.5 or (slot == 16 and 1 or 0) end,
+            Usable = function(id) return ITEMS[id].armorOK ~= false end,
+        },
+    }
+end
+function RemoveNaowh() NaowhForever = nil end
+
 function FireEvent(event, ...)
     for _, f in ipairs(ALL_FRAMES) do
         if f.__events and f.__events[event] and f.__scripts.OnEvent then f.__scripts.OnEvent(f, event, ...) end

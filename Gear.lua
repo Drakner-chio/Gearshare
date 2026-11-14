@@ -1,18 +1,23 @@
 -- GearShare: what I wear, and how much a drop would improve it.
 --
--- Every player rates drops for themselves, with their own Pawn scales: my
--- client can't see anyone else's scales, and inspecting others only works up
--- close and out of combat. So Evaluate(link) answers "what is this item worth
--- to ME, compared with what I wear", and Comm.lua shares the answer.
+-- Every player rates drops for themselves, with their own stat weights: my
+-- client can't see anyone else's, and inspecting others only works up close
+-- and out of combat. So Evaluate(link) answers "what is this item worth to ME,
+-- compared with what I wear", and Comm.lua shares the answer.
 --
--- Comparison, per Pawn scale that is shown for this character (the best scale
--- wins):
+-- The weights come from Pawn (every scale shown for this character, the best
+-- one wins) or from Naowh Forever's Stat Weights (the active spec). Either way
+-- the percent is the item against what it replaces, slot by slot, so everyone's
+-- numbers can stand in one ranking. Naowh's own percent (over the whole
+-- character) is not used for that reason.
+--
+-- Comparison:
 --   rings, trinkets      against the weaker of the two worn
 --   one-handers          against the main hand (or the weaker weapon when dual wielding)
 --   two-handers          against main hand + off hand together
 --   off-hand items       when a two-hander is worn: against half of it
--- Without Pawn, or for items Pawn gives no score (many trinkets), the item
--- level decides.
+-- Without weights, or for items they give no score (many trinkets), the item
+-- level decides. A drop on the player's Naowh BiS list says so (bis = rank).
 
 local ADDON, ns = ...
 local L = ns.L
@@ -82,14 +87,21 @@ function G.ItemID(link)
 end
 
 ---------------------------------------------------------------------------
--- Pawn
+-- Rating sources ("scorers"). Each has:
+--   Ready()            can it rate now
+--   Scales()           the scale names to rate with
+--   Values(link, slot) { [scale] = value } for an item in a slot; nil while
+--                      the game hasn't sent the item yet
+--   Label(scale)       the name shown for a scale
+--   Usable(link)       false when the item is not for this character, nil unknown
 ---------------------------------------------------------------------------
-function G.HasPawn()
+local Pawn = { key = "pawn" }
+
+function Pawn.Ready()
     return PawnIsInitialized and PawnGetItemData and PawnGetSingleValueFromItem and PawnCommon and PawnCommon.Scales and true or false
 end
 
--- Names of the Pawn scales shown for this character
-local function VisibleScales()
+function Pawn.Scales()
     local list = {}
     for name in pairs(PawnCommon.Scales) do
         local ok, visible = pcall(PawnIsScaleVisible, name)
@@ -98,18 +110,8 @@ local function VisibleScales()
     table.sort(list)
     return list
 end
-G.VisibleScales = VisibleScales
 
-local function ScaleLabel(name)
-    if PawnGetScaleLocalizedName then
-        local ok, label = pcall(PawnGetScaleLocalizedName, name)
-        if ok and label then return label end
-    end
-    return (name:gsub('^"[^"]*":', ""))
-end
-
--- { [scale] = value } for an item link; nil while the game hasn't sent the item yet
-local function PawnValues(link, scales)
+function Pawn.Values(link, _, scales)
     local ok, item = pcall(PawnGetItemData, link)
     if not ok or not item then return nil end
     local values = {}
@@ -117,7 +119,95 @@ local function PawnValues(link, scales)
         local ok2, v = pcall(PawnGetSingleValueFromItem, item, scale)
         values[scale] = ok2 and tonumber(v) or 0
     end
-    return values, item
+    return values
+end
+
+function Pawn.Label(name)
+    if PawnGetScaleLocalizedName then
+        local ok, label = pcall(PawnGetScaleLocalizedName, name)
+        if ok and label then return label end
+    end
+    return (name:gsub('^"[^"]*":', ""))
+end
+
+function Pawn.Usable(link)
+    if not PawnIsArmorBestTypeForPlayer then return nil end
+    local ok, item = pcall(PawnGetItemData, link)
+    if not ok or not item then return nil end
+    local ok2, best = pcall(PawnIsArmorBestTypeForPlayer, item)
+    if ok2 and best == false then return false end
+    return true
+end
+
+-- Naowh Forever's Stat Weights (NaowhForever_BiS): one scale, the active spec
+local Naowh = { key = "naowh" }
+local function SW()
+    local nf = _G.NaowhForever
+    return nf and nf.StatWeights
+end
+
+function Naowh.Ready()
+    local sw = SW()
+    return sw and sw.For and sw.ActiveSpec and sw.Stats and sw.Worth and sw.DpsShare and true or false
+end
+
+function Naowh.Scales()
+    local ok, key = pcall(SW().ActiveSpec)
+    return (ok and key) and { key } or {}
+end
+
+function Naowh.Values(link, slot, scales)
+    local sw = SW()
+    local key = scales[1]
+    local ok, weights = pcall(sw.For, key)
+    if not ok or not weights then return {} end
+    local ok2, stats = pcall(sw.Stats, link)
+    if not ok2 or not stats then return nil end
+    local ok3, worth = pcall(sw.Worth, stats, weights, sw.DpsShare(slot or 0))
+    return { [key] = (ok3 and tonumber(worth)) or 0 }
+end
+
+function Naowh.Label(key)
+    local ok, spec = pcall(SW().Spec, key)
+    return "Naowh: " .. ((ok and spec and spec.name) or key)
+end
+
+function Naowh.Usable(link)
+    local sw = SW()
+    if not sw.Usable then return nil end
+    local id = G.ItemID(link)
+    local ok, usable = pcall(sw.Usable, id, link)
+    if not ok then return nil end
+    return usable
+end
+
+G.Pawn, G.Naowh = Pawn, Naowh
+
+function G.HasPawn() return Pawn.Ready() end
+function G.HasNaowh() return Naowh.Ready() end
+
+-- The source to rate with, by the setting: "auto" (Pawn, else Naowh), "pawn" or "naowh".
+-- nil: none there, the item level decides.
+function G.Scorer()
+    local want = ns.db and ns.db.source or "auto"
+    if want == "naowh" then
+        if Naowh.Ready() then return Naowh end
+        if Pawn.Ready() then return Pawn end
+    else
+        if Pawn.Ready() then return Pawn end
+        if Naowh.Ready() then return Naowh end
+    end
+    return nil
+end
+
+-- Where the drop stands on my Naowh BiS list: 1 = BiS, 2 = second pick ...; nil when not on it
+function G.BisRank(link)
+    local nf = _G.NaowhForever
+    if not (nf and nf.IsBisItem) then return nil end
+    local ok, rank = pcall(nf.IsBisItem, G.ItemID(link))
+    rank = ok and tonumber(rank) or nil
+    if rank and rank >= 1 then return math.floor(rank) end
+    return nil
 end
 
 -- Highest value in a { [scale] = value } table (0 when empty)
@@ -140,15 +230,20 @@ local function Worn(slot)
 end
 G.Worn = Worn
 
--- Everything worn, for sharing: { {slot, itemID, ilvl, score}, ... }.
--- score is the best Pawn score over the shown scales (nil without Pawn).
-function G.Snapshot()
-    local scales = G.HasPawn() and VisibleScales() or nil
-    local list = {}
+local function AllSlots()
     local slots = {}
     for _, s in ipairs(G.SLOTS) do slots[#slots + 1] = s[1] end
     if RangedSlotExists() then slots[#slots + 1] = RANGED_SLOT end
-    for _, slot in ipairs(slots) do
+    return slots
+end
+
+-- Everything worn, for sharing: { {slot, itemID, ilvl, score}, ... }.
+-- score is the best score by my rating source (nil without one).
+function G.Snapshot()
+    local scorer = G.Scorer()
+    local scales = scorer and scorer.Scales() or nil
+    local list = {}
+    for _, slot in ipairs(AllSlots()) do
         local link = Worn(slot)
         local e = { slot = slot, itemID = 0, ilvl = 0 }
         if link then
@@ -156,7 +251,7 @@ function G.Snapshot()
             e.ilvl = G.ItemLevel(link) or 0
             e.link = link
             if scales and #scales > 0 then
-                local values = PawnValues(link, scales)
+                local values = scorer.Values(link, slot, scales)
                 if values then e.score = BestOf(values) end
             end
         end
@@ -171,30 +266,29 @@ end
 -- Returns a result table, or nil (+ "wait") when item data isn't loaded yet:
 --   status  "U" upgrade · "E" fills an empty slot · "S" no upgrade
 --           "X" can't use it · "-" not something you wear
---   pct     upgrade in percent (by the best Pawn scale, or by item level)
+--   pct     upgrade in percent (by the best scale, or by item level)
 --   ilvl    item level difference to what it replaces
---   scale   the Pawn scale's name, or nil when the item level decided
+--   scale   the scale's name, or nil when the item level decided
 --   slot    the slot it would go into
---   reason  for "X": "need" (can't roll need) or "armor" (not your armor type)
+--   reason  for "X": "need" (can't roll need) or "armor" (not for you)
+--   bis     its rank on my Naowh BiS list (1 = BiS), or nil
 ---------------------------------------------------------------------------
 function G.Evaluate(link, canNeed)
     local equipLoc = G.EquipLoc(link)
     local slots = G.SlotsFor(equipLoc)
     if not slots then return { status = "-" } end
-    if canNeed == false then return { status = "X", reason = "need", slot = slots[1] } end
+    local bis = G.BisRank(link)
+    if canNeed == false then return { status = "X", reason = "need", slot = slots[1], bis = bis } end
 
     local newIlvl = G.ItemLevel(link)
     if not newIlvl then return nil, "wait" end
 
-    local scales = G.HasPawn() and VisibleScales() or {}
-    local newValues, pawnItem
-    if #scales > 0 then
-        newValues, pawnItem = PawnValues(link, scales)
-        if not newValues then return nil, "wait" end
-        if PawnIsArmorBestTypeForPlayer then
-            local ok, best = pcall(PawnIsArmorBestTypeForPlayer, pawnItem)
-            if ok and best == false then return { status = "X", reason = "armor", slot = slots[1] } end
-        end
+    local scorer = G.Scorer()
+    local scales = scorer and scorer.Scales() or {}
+    if #scales == 0 then scorer = nil end
+    if scorer then
+        local usable = scorer.Usable(link)
+        if usable == false then return { status = "X", reason = "armor", slot = slots[1], bis = bis } end
     end
 
     -- What is worn in the slots this item could take: per slot { ilvl, values, id } or false
@@ -205,8 +299,8 @@ function G.Evaluate(link, canNeed)
         if w == nil then return nil end
         if w == false then worn[slot] = false return false end
         local e = { ilvl = G.ItemLevel(w) or 0, id = G.ItemID(w), equipLoc = G.EquipLoc(w) }
-        if #scales > 0 then
-            e.values = PawnValues(w, scales)
+        if scorer then
+            e.values = scorer.Values(w, slot, scales)
             if not e.values then return nil end
         end
         worn[slot] = e
@@ -235,7 +329,7 @@ function G.Evaluate(link, canNeed)
                 end
             end
             old.ilvl = old.ilvl / math.max(n, 1)
-            if #scales == 0 then old.values = nil end
+            if not scorer then old.values = nil end
         end
     elseif twoHanderWorn and OFFHAND_TYPES[equipLoc] then
         -- A one-hander or off-hand item where a two-hander is worn: it would
@@ -249,11 +343,7 @@ function G.Evaluate(link, canNeed)
     elseif equipLoc == "INVTYPE_WEAPON" then
         local dualWield = (CanDualWield and CanDualWield()) and (not oh or oh.equipLoc == "INVTYPE_WEAPON"
             or oh.equipLoc == "INVTYPE_WEAPONOFFHAND" or oh.equipLoc == "INVTYPE_WEAPONMAINHAND")
-        if dualWield then
-            slots = { 16, 17 }
-        else
-            slots = { 16 }
-        end
+        slots = dualWield and { 16, 17 } or { 16 }
     end
 
     if old == nil then
@@ -269,7 +359,7 @@ function G.Evaluate(link, canNeed)
         old = best and best.e or false
     end
 
-    local result = { slot = slot }
+    local result = { slot = slot, bis = bis }
     if not old then
         result.status = "E"
         result.ilvl = newIlvl
@@ -283,7 +373,15 @@ function G.Evaluate(link, canNeed)
         return result
     end
 
-    -- Best Pawn scale
+    -- The new item's values in the slot it goes into (weapon damage counts
+    -- differently in the off hand for Naowh)
+    local newValues
+    if scorer then
+        newValues = scorer.Values(link, slot, scales)
+        if not newValues then return nil, "wait" end
+    end
+
+    -- Best scale
     local bestPct, bestScale
     if newValues and old.values then
         for _, scale in ipairs(scales) do
@@ -298,9 +396,9 @@ function G.Evaluate(link, canNeed)
     end
     if bestPct then
         result.pct = bestPct
-        result.scale = ScaleLabel(bestScale)
+        result.scale = scorer.Label(bestScale)
     else
-        -- No Pawn, or Pawn has nothing to say about this item: item level
+        -- No weights, or they have nothing to say about this item: item level
         local o = old.ilvl or 0
         result.pct = o > 0 and (newIlvl - o) / o * 100 or 0
     end

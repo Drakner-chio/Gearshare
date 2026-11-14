@@ -308,3 +308,27 @@ function T.Card(parent, title, x, y, w, h)
     t:SetPoint("TOPLEFT", 20, -10)
     return f
 end
+
+-- A row of buttons, one of them chosen (violet): choices = { {key, label}, ... }
+function T.Choice(parent, text, x, y, choices, get, set, width)
+    local title = Text(parent, text, 13)
+    title:SetPoint("TOPLEFT", x, y)
+    local row = {}
+    local w = width or 90
+    for i, c in ipairs(choices) do
+        local b = FlatButton(parent, c[2], w, 22)
+        b:SetPoint("TOPLEFT", x + (i - 1) * (w + 6), y - 20)
+        b.key = c[1]
+        b:SetScript("OnClick", function()
+            set(c[1])
+            row.Refresh()
+        end)
+        row[#row + 1] = b
+    end
+    function row.Refresh()
+        local cur = get()
+        for _, b in ipairs(row) do b:SetPrimary(b.key == cur) end
+    end
+    row.Refresh()
+    return row
+end

@@ -54,7 +54,7 @@ end
 
 local function PaintRow(r, e, first)
     r.mark:SetShown(first and (e.kind == "U" or e.kind == "E"))
-    r.name:SetText(ns.ColoredName(e.name))
+    r.name:SetText(ns.ColoredName(e.name) .. ns.Loot.BisTag(e.r))
     local c = KIND_COLOR[e.kind] or C.text
     local value, scale = "", ""
     if e.kind == "wait" then

@@ -28,6 +28,10 @@ scales**, and every GearShare in the group shows the same ranking:
   that isn't your type, count as "can't use".
 - **Without Pawn**, or for items Pawn can't score (many trinkets), the item
   level decides.
+- **Naowh Forever:** with its BiS List installed, a drop on someone's BiS list gets a
+  star in the ranking, and Naowh's Stat Weights can rate drops instead of Pawn
+  (*Settings → Rating*; Automatic takes Pawn first). The percent is always the item
+  against what it replaces in its slot, so Pawn and Naowh numbers fit one ranking.
 - **Group gear** (`/gs gear`): everyone's gear slot by slot with item levels.
   Each player's two weakest slots are marked.
 

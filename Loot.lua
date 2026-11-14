@@ -237,6 +237,14 @@ function Loot.Ranking(d)
     return list
 end
 
+-- "★ BiS" / "★ 2" after a name, for a drop on that player's Naowh BiS list
+function Loot.BisTag(r)
+    if not (r and r.bis) then return "" end
+    local star = "|A:auctionhouse-icon-favorite:12:12|a"
+    if r.bis == 1 then return " " .. star .. "|cffff8a1aBiS|r" end
+    return " " .. star .. "|cffc0c4cc" .. L["%d. pick"]:format(r.bis) .. "|r"
+end
+
 -- "+6.1 %", "+12 ilvl", "empty slot" ... for one verdict
 function Loot.Describe(r)
     if not r then return "" end
@@ -258,7 +266,8 @@ function Loot:Announce(d)
     local parts = {}
     for _, e in ipairs(Loot.Ranking(d)) do
         if e.kind == "E" or e.kind == "U" then
-            parts[#parts + 1] = e.name:gsub("%-.*$", "") .. " " .. Loot.Describe(e.r)
+            local bis = e.r.bis == 1 and " (BiS)" or (e.r.bis and (" (BiS #" .. e.r.bis .. ")")) or ""
+            parts[#parts + 1] = e.name:gsub("%-.*$", "") .. bis .. " " .. Loot.Describe(e.r)
         end
     end
     local body = #parts > 0 and table.concat(parts, ", ") or L["no upgrade for anyone"]

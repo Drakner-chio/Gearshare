@@ -129,6 +129,40 @@ check(r.status == "U", "without Pawn nothing knows the armor type")
 InstallPawn({ "A", "B" })
 
 ---------------------------------------------------------------------------
+STEP("rating with Naowh Forever's stat weights")
+InstallNaowh()
+r = eval(101)
+check(r.scale == "Scale B", "automatic: Pawn first while it is there")
+ns.db.source = "naowh"
+r = eval(101)
+check(r.status == "U" and near(r.pct, 10) and r.scale == "Naowh: Arms", "Naowh chosen: its weights, slot against slot (100 -> 110)")
+r = eval(102)
+check(r.status == "X" and r.reason == "armor", "Naowh says: not for this class")
+r = eval(124)
+check(near(r.pct, 20) and r.slot == 16, "weapons the same way")
+ns.db.source = "pawn"
+check(eval(101).scale == "Scale B", "Pawn chosen: Pawn")
+ns.db.source = "auto"
+RemovePawn()
+r = eval(101)
+check(r.scale == "Naowh: Arms", "automatic without Pawn: Naowh")
+check(G.Snapshot()[1].score == 100, "gear scores come from Naowh then too")
+ns.db.source = "pawn"
+check(eval(101).scale == "Naowh: Arms", "Pawn chosen but missing: Naowh after all")
+ns.db.source = "auto"
+InstallPawn({ "A", "B" })
+
+BIS[101] = 1
+r = eval(101)
+check(r.bis == 1, "a drop on my Naowh BiS list says so")
+r = eval(101, false)
+check(r.bis == 1 and r.status == "X", "even when I can't roll need on it")
+BIS[101] = nil
+check(eval(101).bis == nil, "not on the list: nothing")
+RemoveNaowh()
+check(eval(101).bis == nil and eval(101).scale == "Scale B", "without Naowh everything as before")
+
+---------------------------------------------------------------------------
 STEP("gear messages")
 local snap = G.Snapshot()
 check(#snap == 16, "16 slots shared")
@@ -166,11 +200,11 @@ check(d.results.Alex and d.results.Alex.status == "U", "and I rated it")
 local sentE
 for _, m in ipairs(SENT) do if m.text:sub(1, 2) == "E^" then sentE = m end end
 check(sentE and sentE.channel == "PARTY", "my verdict went to the party")
-check(sentE.text == "E^item:101^U^20.0^3^Scale B^", "as one short line: " .. tostring(sentE and sentE.text))
+check(sentE.text == "E^item:101^U^20.0^3^Scale B^^", "as one short line: " .. tostring(sentE and sentE.text))
 check(GearShareLootFrame and GearShareLootFrame:IsShown(), "the loot window opened by itself")
 
 -- the others answer (Thrall's client saw the drop with his own level and spec)
-Comm.Receive("E^item:101::::::::28:262^U^35.5^5^Enhancement^", "Thrall-MyRealm")
+Comm.Receive("E^item:101::::::::28:262^U^35.5^5^Enhancement^^1", "Thrall-MyRealm")
 Comm.Receive("E^item:101^X^^^^armor", "Varian")
 RunTimers(1)
 check(#Loot.drops == 1, "their verdicts land on the same drop")
@@ -181,6 +215,9 @@ check(rank[4].name == "Jaina" and rank[4].kind == "none", "Jaina has no GearShar
 local text = AllText(GearShareLootFrame)
 check(text:find("+35.5 %", 1, true) and text:find("wrong armor", 1, true) and text:find("no GearShare", 1, true), "the window shows it all")
 check(text:find("Enhancement", 1, true), "with the scale")
+check(d.results.Thrall.bis == 1 and text:find("BiS", 1, true), "and Thrall's BiS star")
+Comm.Receive("E^item:101^X^^^^armor", "Varian")
+check(d.results.Varian.bis == nil, "an older GearShare without the field: no star")
 
 -- an item that is new to me (no roll window for me): I rate it as well
 SENT = {}
@@ -201,7 +238,7 @@ STEP("posting the ranking")
 CHAT = {}
 Loot:Announce(d)
 check(#CHAT == 1 and CHAT[1].channel == "PARTY", "one line to the party")
-check(CHAT[1].text:find("Thrall +35.5 %", 1, true) and CHAT[1].text:find("Alex +20.0 %", 1, true), "who gains how much: " .. CHAT[1].text)
+check(CHAT[1].text:find("Thrall (BiS) +35.5 %", 1, true) and CHAT[1].text:find("Alex +20.0 %", 1, true), "who gains how much: " .. CHAT[1].text)
 check(not CHAT[1].text:find("Varian", 1, true), "only those it helps")
 
 ---------------------------------------------------------------------------
@@ -299,6 +336,11 @@ check(near(ns.db.lootScale, 1.25) and near(GearShareLootFrame.__scale, 1.25), "l
 sliders[4]:SetValue(0.8)
 check(near(ns.db.groupScale, 0.8) and near(GearShareGroupFrame.__scale, 0.8), "group window size")
 check(AllText(GearShareOptionsFrame):find("125 %", 1, true), "shown in percent")
+local naowhBtn
+for _, f in ipairs(ALL_FRAMES) do if f.__kind == "Button" and f.__text == "Naowh" then naowhBtn = f end end
+Click(naowhBtn)
+check(ns.db.source == "naowh", "rating source: Naowh")
+check(AllText(GearShareOptionsFrame):find("Naowh Stat Weights:", 1, true), "it says what is installed")
 
 ---------------------------------------------------------------------------
 STEP("German")

@@ -4,7 +4,8 @@
 --   H^<protocol>^<version>          hello: I'm here, please send your gear
 --   G^<slot>:<itemID>:<ilvl>:<score>;...   (part of) my gear; score is my best
 --                                   Pawn score for the item, empty without Pawn
---   E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>   my verdict on a drop
+--   E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>^<bis>   my verdict on a drop
+--                                   (bis: its rank on my Naowh BiS list, empty when not on it)
 --   C^<item>                        please rate this item (/gs check)
 -- <item> is an item string ("item:12345:..."), never a full link.
 --
@@ -130,7 +131,8 @@ function Comm.SendVerdict(itemString, r)
     if not ns.GroupChannel() then return end
     local pct = r.pct and ("%.1f"):format(r.pct) or ""
     local text = table.concat({ "E", itemString, r.status or "", pct,
-        r.ilvl and tostring(math.floor(r.ilvl + 0.5)) or "", Clean(r.scale, 30), Clean(r.reason, 10) }, SEP)
+        r.ilvl and tostring(math.floor(r.ilvl + 0.5)) or "", Clean(r.scale, 30), Clean(r.reason, 10),
+        r.bis and tostring(r.bis) or "" }, SEP)
     Comm.Queue(text, "E", itemString)
 end
 
@@ -184,6 +186,7 @@ function Comm.Receive(text, sender)
             ilvl = tonumber(f[5]),
             scale = f[6] ~= "" and f[6] or nil,
             reason = f[7] ~= "" and f[7] or nil,
+            bis = tonumber(f[8] or ""),
         })
     elseif kind == "C" then
         local itemString = f[2]

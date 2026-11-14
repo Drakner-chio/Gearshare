@@ -9,6 +9,7 @@
 - **Fair comparisons:** rings and trinkets against your weaker one, two-handers against main hand + off hand, off-hand items next to a two-hander against half of it
 - **Can't use it?** Items you can't roll need on and the wrong armor type are marked as such
 - **No Pawn score?** Then the item level decides (many trinkets)
+- **Naowh Forever:** drops on someone's Naowh BiS list get a ★ in the ranking, and Naowh's Stat Weights can rate drops instead of Pawn
 - **Post** the ranking to party or raid chat with one click
 - **Group gear** (`/gs gear`): everyone's gear slot by slot, with each player's weakest slots marked
 

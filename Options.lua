@@ -40,8 +40,27 @@ local function Build()
         function(v) ns.db.keepMinutes = v end,
         5, 60, 5, L["%d min"])
 
-    -- Group gear
+    -- Rating
     y = y - 210
+    local rate = T.Card(frame, "Rating", PAD, y, cw, 92)
+    controls[#controls + 1] = T.Choice(rate, "Rate drops with", 16, -30, {
+        { "auto", "Automatic" }, { "pawn", "Pawn" }, { "naowh", "Naowh" },
+    }, function() return ns.db.source end, function(v)
+        ns.db.source = v
+        ns.Comm.SendGear()
+    end, 110)
+    T.Tooltip(controls[#controls][1], "Automatic", "Pawn when it is installed, otherwise Naowh Forever's Stat Weights, otherwise the item level.")
+    T.Tooltip(controls[#controls][3], "Naowh", "The stat weights of Naowh Forever's BiS List for your spec. GearShare compares the item with what you wear in its slot, like with Pawn, so everyone's numbers fit one ranking.")
+    local found = T.Text(rate, "", 11, C.faint, true)
+    found:SetPoint("TOPLEFT", 16, -76)
+    controls[#controls + 1] = { Refresh = function()
+        local function yes(on) return on and ("|cff5cd97a" .. L["found"] .. "|r") or ("|cffdb5c5c" .. L["not found"] .. "|r") end
+        found:SetText(L["Pawn: %s  ·  Naowh Stat Weights: %s"]:format(
+            yes(ns.Gear.HasPawn()), yes(ns.Gear.HasNaowh())))
+    end }
+
+    -- Group gear
+    y = y - 102
     local group = T.Card(frame, "Group gear", PAD, y, cw, 64)
     controls[#controls + 1] = T.Slider(group, "Size", 16, -30, cw - 32,
         function() return ns.db.groupScale end,

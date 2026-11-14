@@ -22,6 +22,7 @@ local DEFAULTS = {
     locked = false,        -- windows can't be dragged
     minimapButton = true,
     minimapAngle = 215,
+    source = "auto",       -- rate with: "auto" (Pawn, else Naowh), "pawn", "naowh"
 }
 
 ---------------------------------------------------------------------------
