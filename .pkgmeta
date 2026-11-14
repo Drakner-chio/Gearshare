@@ -10,3 +10,4 @@ ignore:
   - README.md
   - docs
   - tests
+  - media/icon-400.png
