@@ -1,14 +1,9 @@
+![GearShare – who needs this drop the most?](https://raw.githubusercontent.com/Drakner-chio/Gearshare/main/docs/images/gearshare-1.jpg)
+
 ## Who needs this drop the most?
 
 **GearShare** shows your group, the moment a need/greed roll starts, **who gets the biggest upgrade** from the item – rated by every player's **own Pawn scales** against the gear they actually wear.
 
-```
-[Raging Berserker's Helm]            Head · just now   [Post]
-▌ Thrall     Enhancement  +6 ilvl     +8.4 %
-  Alex       Arms         +3 ilvl     +3.2 %
-  Anduin     Holy         -2 ilvl     -4.0 %
-  Jaina                           wrong armor
-```
 
 - **Everyone rates for themselves:** each GearShare asks its own Pawn and shares the answer with the group – no inspecting, no guessing other people's stat weights
 - **Fair comparisons:** rings and trinkets against your weaker one, two-handers against main hand + off hand, off-hand items next to a two-hander against half of it
@@ -18,6 +13,12 @@
 - **Group gear** (`/gs gear`): everyone's gear slot by slot, with each player's weakest slots marked
 
 Made for **World of Warcraft: Forever**. English and German.
+
+![Everyone rates it for themselves](https://raw.githubusercontent.com/Drakner-chio/Gearshare/main/docs/images/gearshare-2.jpg)
+
+![See where everyone is weakest](https://raw.githubusercontent.com/Drakner-chio/Gearshare/main/docs/images/gearshare-3.jpg)
+
+![One click, and everyone knows](https://raw.githubusercontent.com/Drakner-chio/Gearshare/main/docs/images/gearshare-4.jpg)
 
 ## Requirements
 

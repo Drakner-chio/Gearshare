@@ -1,5 +1,7 @@
 # GearShare
 
+![GearShare](docs/images/gearshare-1.jpg)
+
 **Who in your group gets the biggest upgrade from a drop?** GearShare for
 **World of Warcraft: Forever** (interface 16001) answers this when a need/greed
 roll starts. Everyone in the group rates the drop with their **own Pawn
