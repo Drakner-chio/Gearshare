@@ -1,0 +1,23 @@
+## Interface: 120105, 16001
+## Title: |cff9d7bffGearShare|r
+## Notes: Who in your group gets the biggest upgrade from a drop: everyone rates it with their own Pawn.
+## Notes-deDE: Wer in der Gruppe vom Drop am meisten hat: jeder bewertet ihn mit seinem eigenen Pawn.
+## Author: Drakner-chio
+## Version: @project-version@
+## IconTexture: Interface\AddOns\GearShare\media\Logo
+## OptionalDeps: Pawn
+## SavedVariables: GearShareDB
+## AddonCompartmentFunc: GearShare_OnCompartmentClick
+## X-License: MIT
+## X-Website: https://github.com/Drakner-chio/Gearshare
+## X-Category: Inventory
+
+Locale.lua
+Locale_deDE.lua
+Theme.lua
+Core.lua
+Gear.lua
+Comm.lua
+Loot.lua
+LootWindow.lua
+GroupWindow.lua

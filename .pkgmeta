@@ -1,0 +1,12 @@
+package-as: GearShare
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+# No libraries and no externals: building a release downloads nothing.
+
+ignore:
+  - README.md
+  - docs
+  - tests
