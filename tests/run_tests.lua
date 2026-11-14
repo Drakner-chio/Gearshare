@@ -250,8 +250,7 @@ STEP("slash commands and the test drop")
 ns.LootWindow:Open()
 Click((function()
     for _, f in ipairs(ALL_FRAMES) do
-        local fs = rawget(f, "__fs")
-        if fs and fs.__text == "Clear" then return f end
+        if f.__kind == "Button" and f.__text == "Clear" then return f end
     end
 end)())
 check(#Loot.drops == 0, "cleared")
