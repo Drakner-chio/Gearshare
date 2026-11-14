@@ -200,7 +200,7 @@ C_Item = {
         local it = ITEMS[id]
         if not it or NOT_LOADED[id] then return nil end
         local itemString = tostring(link):match("(item:[%-%d:]+)")
-        return it.name, MakeLink(itemString), 4, it.ilvl
+        return it.name, MakeLink(itemString), it.quality or 4, it.ilvl
     end,
     GetDetailedItemLevelInfo = function(link)
         local id = IdOf(link)
@@ -221,7 +221,8 @@ ROLLS = {}   -- [rollID] = { itemString, canNeed }
 function GetLootRollItemLink(id) return ROLLS[id] and MakeLink(ROLLS[id][1]) end
 function GetLootRollItemInfo(id)
     local r = ROLLS[id]
-    return 134400, "x", 1, 4, true, r and r.canNeed ~= false
+    local it = r and ITEMS[IdOf(r[1])]
+    return 134400, "x", 1, it and it.quality or 4, true, r and r.canNeed ~= false
 end
 
 ---------------------------------------------------------------------------

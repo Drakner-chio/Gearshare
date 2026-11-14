@@ -22,6 +22,7 @@ local DEFAULTS = {
     locked = false,        -- windows can't be dragged
     minimapButton = true,
     minimapAngle = 215,
+    minQuality = 2,        -- drops from this quality on are listed (2 uncommon, 3 rare, 4 epic)
     source = "auto",       -- rate with: "auto" (Pawn, else Naowh), "pawn", "naowh"
 }
 

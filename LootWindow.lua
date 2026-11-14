@@ -207,7 +207,7 @@ end
 function W:Paint()
     if not frame then return end
     local y, shown, full = 0, 0, false
-    local drops = ns.Loot.drops
+    local drops = ns.Loot.VisibleDrops()
     for i, d in ipairs(drops) do
         local card = cards[i] or NewCard()
         cards[i] = card

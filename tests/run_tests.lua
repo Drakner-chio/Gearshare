@@ -234,6 +234,28 @@ RunTimers(1)
 check(Loot.byKey["150:0:"] == nil or Loot.byKey["150:0:"].results.Thrall, "a potion is not rated by me")
 
 ---------------------------------------------------------------------------
+STEP("from which quality on")
+ITEMS[160] = { name = "Green Gloves", equipLoc = "INVTYPE_HAND", ilvl = 30, values = { A = 30 }, quality = 2 }
+ns.db.minQuality = 3
+GearShareLootFrame:Hide()
+SENT = {}
+ROLLS[8] = { "item:160::::::::30:71" }
+FireEvent("START_LOOT_ROLL", 8, 60000)
+RunTimers(1)
+local gloves = Loot.byKey["160:0:"]
+check(gloves and gloves.results.Alex, "a green drop is still rated")
+check(#SENT == 1 and SENT[1].text:find("^E%^item:160"), "and my verdict goes to the group")
+check(not GearShareLootFrame:IsShown(), "but the window doesn't open for it (rare and up)")
+ns.LootWindow:Open()
+RunTimers(1)
+check(not AllText(GearShareLootFrame):find("Green Gloves", 1, true), "nor lists it")
+check(AllText(GearShareLootFrame):find("New Helm", 1, true), "the epic helm is still there")
+ns.db.minQuality = 2
+ns.LootWindow:Refresh()
+RunTimers(1)
+check(AllText(GearShareLootFrame):find("Green Gloves", 1, true), "uncommon and up: there it is")
+
+---------------------------------------------------------------------------
 STEP("posting the ranking")
 CHAT = {}
 Loot:Announce(d)

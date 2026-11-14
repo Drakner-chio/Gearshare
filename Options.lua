@@ -40,8 +40,21 @@ local function Build()
         function(v) ns.db.keepMinutes = v end,
         5, 60, 5, L["%d min"])
 
-    -- Rating
+    -- From which quality on
     y = y - 210
+    local qual = T.Card(frame, "Which drops", PAD, y, cw, 70)
+    controls[#controls + 1] = T.Choice(qual, "List drops from this quality on", 16, -30, {
+        { 1, "Common" }, { 2, "Uncommon" }, { 3, "Rare" }, { 4, "Epic" },
+    }, function() return ns.db.minQuality end, function(v)
+        ns.db.minQuality = v
+        ns.LootWindow:Refresh()
+    end, 84)
+    for _, b in ipairs(controls[#controls]) do
+        T.Tooltip(b, "Which drops", "Lower drops are still rated for the group, they just don't open or show up in your window.")
+    end
+
+    -- Rating
+    y = y - 80
     local rate = T.Card(frame, "Rating", PAD, y, cw, 92)
     controls[#controls + 1] = T.Choice(rate, "Rate drops with", 16, -30, {
         { "auto", "Automatic" }, { "pawn", "Pawn" }, { "naowh", "Naowh" },

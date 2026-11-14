@@ -10,6 +10,9 @@
   - group gear: size
   - minimap button on/off, lock windows, reset window positions, test drop
 - **Clear** (and `/gs clear`) also closes the loot window.
+- **Which drops**: in the settings, from which quality on drops open the loot window and
+  show up in it (common, uncommon, rare, epic; default uncommon). Lower drops are still
+  rated, so the rest of the group still gets your verdict.
 - **Naowh Forever**:
   - a drop on a player's Naowh BiS list gets a star in the ranking (“★ BiS”, “★ 2. pick”),
     also in the chat post

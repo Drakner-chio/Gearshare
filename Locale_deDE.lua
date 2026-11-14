@@ -95,4 +95,13 @@ ns.TRANSLATIONS.deDE = {
     ["Pawn when it is installed, otherwise Naowh Forever's Stat Weights, otherwise the item level."] = "Pawn, wenn es installiert ist, sonst die Stat-Gewichtungen von Naowh Forever, sonst das Itemlevel.",
     ["The stat weights of Naowh Forever's BiS List for your spec. GearShare compares the item with what you wear in its slot, like with Pawn, so everyone's numbers fit one ranking."] = "Die Stat-Gewichtungen aus Naowh Forevers BiS-Liste für deine Spezialisierung. GearShare vergleicht das Item wie bei Pawn mit dem, was du im Slot trägst, damit alle Zahlen in eine Rangliste passen.",
     ["%d. pick"] = "%d. Wahl",
+
+    -- Seltenheit
+    ["Which drops"] = "Welche Drops",
+    ["List drops from this quality on"] = "Drops ab dieser Seltenheit anzeigen",
+    ["Common"] = "Gewöhnlich",
+    ["Uncommon"] = "Selten",
+    ["Rare"] = "Rar",
+    ["Epic"] = "Episch",
+    ["Lower drops are still rated for the group, they just don't open or show up in your window."] = "Schwächere Drops werden für die Gruppe trotzdem bewertet, sie öffnen und erscheinen nur nicht in deinem Fenster.",
 }

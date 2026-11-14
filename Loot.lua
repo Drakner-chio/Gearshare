@@ -95,8 +95,38 @@ local function Refresh()
     if ns.LootWindow and ns.LootWindow.Refresh then ns.LootWindow:Refresh() end
 end
 
-local function ShowWindow()
-    if ns.db and ns.db.autoShow and ns.LootWindow then ns.LootWindow:Open() end
+-- Item quality (0 grey … 4 epic …), nil until the game has sent the item
+function Loot.Quality(d)
+    if d.quality then return d.quality end
+    local info = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+    if info then
+        local _, _, q = info(d.link or d.itemString)
+        d.quality = tonumber(ns.Plain(q))
+    end
+    return d.quality
+end
+
+-- Is a drop listed in my window? Drops below the quality set in the settings
+-- are still rated and answered (the others' windows wait for my verdict),
+-- they just don't show up here. What I asked about myself always shows.
+function Loot.Visible(d)
+    if d.askedBy == ns.Me() or d.demo then return true end
+    local q = Loot.Quality(d)
+    if not q then return false end
+    return q >= ((ns.db and ns.db.minQuality) or 2)
+end
+
+function Loot.VisibleDrops()
+    local list = {}
+    for _, d in ipairs(Loot.drops) do if Loot.Visible(d) then list[#list + 1] = d end end
+    return list
+end
+
+local function ShowWindow(d)
+    if not (ns.db and ns.db.autoShow and ns.LootWindow) then return end
+    if d and not Loot.Visible(d) then return end
+    if d then d.opened = true end
+    ns.LootWindow:Open()
 end
 
 ---------------------------------------------------------------------------
@@ -147,13 +177,15 @@ function Loot.OnRoll(rollID)
     local d = Loot.Get(itemString, link)
     d.time = ns.Now()
     if GetLootRollItemInfo then
-        local _, _, _, _, _, canNeed = GetLootRollItemInfo(rollID)
+        local _, _, _, quality, _, canNeed = GetLootRollItemInfo(rollID)
         canNeed = ns.Plain(canNeed)
         if canNeed ~= nil then d.canNeed = canNeed and true or false end
+        quality = tonumber(ns.Plain(quality))
+        if quality then d.quality = quality end
     end
     d.rollID = rollID
     Loot.RateMine(d, true)
-    ShowWindow()
+    ShowWindow(d)
     Refresh()
 end
 
@@ -164,7 +196,7 @@ function Loot:OnVerdict(sender, itemString, r)
     d.results[sender] = r
     -- An item I haven't rated yet (I had no roll for it): rate it too
     if not d.results[ns.Me()] and not d.rating then Loot.RateMine(d, true) end
-    if isNew then ShowWindow() end
+    if not d.opened then ShowWindow(d) end
     Refresh()
 end
 
@@ -174,7 +206,7 @@ function Loot:OnCheck(sender, itemString)
     d.time = ns.Now()
     d.askedBy = sender
     if not d.rating then Loot.RateMine(d, true) end
-    ShowWindow()
+    ShowWindow(d)
     Refresh()
 end
 
@@ -307,6 +339,8 @@ ns.On("START_LOOT_ROLL", function(rollID) Loot.OnRoll(rollID) end)
 ns.On("GET_ITEM_INFO_RECEIVED", function()
     for _, d in ipairs(Loot.drops) do
         if not d.link then d.link = LinkFor(d.itemString) end
+        -- its quality is known now: open the window if it's a drop worth showing
+        if not d.opened and not d.demo and Loot.Visible(d) then ShowWindow(d) end
     end
     Refresh()
 end)
