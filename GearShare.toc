@@ -1,4 +1,4 @@
-## Interface: 120105, 16001
+## Interface: 16001
 ## Title: |cff9d7bffGearShare|r
 ## Notes: Who in your group gets the biggest upgrade from a drop: everyone rates it with their own Pawn.
 ## Notes-deDE: Wer in der Gruppe vom Drop am meisten hat: jeder bewertet ihn mit seinem eigenen Pawn.
