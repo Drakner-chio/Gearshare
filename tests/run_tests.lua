@@ -129,6 +129,13 @@ check(r.status == "U", "without Pawn nothing knows the armor type")
 InstallPawn({ "A", "B" })
 
 ---------------------------------------------------------------------------
+STEP("Pawn still loading")
+PAWN_READY = false
+check(not G.HasPawn() and eval(101).scale == nil, "Pawn not ready yet: item level")
+PAWN_READY = true
+check(G.HasPawn(), "ready: Pawn")
+
+---------------------------------------------------------------------------
 STEP("rating with Naowh Forever's stat weights")
 InstallNaowh()
 r = eval(101)
@@ -159,8 +166,10 @@ r = eval(101, false)
 check(r.bis == 1 and r.status == "X", "even when I can't roll need on it")
 BIS[101] = nil
 check(eval(101).bis == nil, "not on the list: nothing")
+local keep = NaowhForever
 RemoveNaowh()
-check(eval(101).bis == nil and eval(101).scale == "Scale B", "without Naowh everything as before")
+check(G.HasNaowh(), "Naowh's global gone after loading: still found (kept)")
+NaowhForever = keep
 
 ---------------------------------------------------------------------------
 STEP("gear messages")

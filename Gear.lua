@@ -97,8 +97,17 @@ end
 ---------------------------------------------------------------------------
 local Pawn = { key = "pawn" }
 
+-- Pawn keeps "initialized" to itself; PawnIsReady() is how it says so
+local function PawnReady()
+    if PawnIsReady then
+        local ok, ready = pcall(PawnIsReady)
+        return ok and ready and true or false
+    end
+    return PawnIsInitialized and true or false
+end
+
 function Pawn.Ready()
-    return PawnIsInitialized and PawnGetItemData and PawnGetSingleValueFromItem and PawnCommon and PawnCommon.Scales and true or false
+    return PawnReady() and PawnGetItemData and PawnGetSingleValueFromItem and PawnCommon and PawnCommon.Scales and true or false
 end
 
 function Pawn.Scales()
@@ -141,8 +150,17 @@ end
 
 -- Naowh Forever's Stat Weights (NaowhForever_BiS): one scale, the active spec
 local Naowh = { key = "naowh" }
+-- Naowh Forever's namespace, kept from when it loads (in case the global goes away later)
+local naowhNS
+local function NF()
+    if type(_G.NaowhForever) == "table" then naowhNS = _G.NaowhForever end
+    return naowhNS
+end
+G.NF = NF
+ns.On("ADDON_LOADED", function() NF() end)
+NF()
 local function SW()
-    local nf = _G.NaowhForever
+    local nf = NF()
     return nf and nf.StatWeights
 end
 
@@ -202,7 +220,7 @@ end
 
 -- Where the drop stands on my Naowh BiS list: 1 = BiS, 2 = second pick ...; nil when not on it
 function G.BisRank(link)
-    local nf = _G.NaowhForever
+    local nf = NF()
     if not (nf and nf.IsBisItem) then return nil end
     local ok, rank = pcall(nf.IsBisItem, G.ItemID(link))
     rank = ok and tonumber(rank) or nil

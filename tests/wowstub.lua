@@ -229,7 +229,9 @@ end
 -- A fake Pawn: values per scale come from ITEMS
 ---------------------------------------------------------------------------
 function InstallPawn(scales)
-    PawnIsInitialized = true
+    -- like the real Pawn: "initialized" is local, PawnIsReady() says it
+    PAWN_READY = true
+    function PawnIsReady() return PAWN_READY end
     PawnCommon = { Scales = {} }
     for _, s in ipairs(scales) do PawnCommon.Scales[s] = { visible = true } end
     function PawnIsScaleVisible(name) return PawnCommon.Scales[name] and PawnCommon.Scales[name].visible end
@@ -246,7 +248,7 @@ function InstallPawn(scales)
     function PawnIsArmorBestTypeForPlayer(item) return ITEMS[item.ID].armorOK ~= false end
 end
 function RemovePawn()
-    PawnIsInitialized, PawnCommon, PawnGetItemData, PawnGetSingleValueFromItem = nil, nil, nil, nil
+    PawnIsReady, PawnCommon, PawnGetItemData, PawnGetSingleValueFromItem = nil, nil, nil, nil
     PawnIsScaleVisible, PawnIsArmorBestTypeForPlayer = nil, nil
 end
 

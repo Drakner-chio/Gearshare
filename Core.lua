@@ -192,6 +192,22 @@ SlashCmdList.GEARSHARE = function(msg)
         ns.Loot:Clear()
     elseif cmd == "test" then
         ns.Loot:Demo()
+    elseif cmd == "debug" then
+        local G = ns.Gear
+        local nf = G.NF()
+        local sw = nf and nf.StatWeights
+        print(T.CHAT_PREFIX .. " debug")
+        print("  Pawn: PawnIsReady=" .. tostring(PawnIsReady and PawnIsReady()) .. " PawnGetItemData=" .. tostring(PawnGetItemData ~= nil)
+            .. " PawnCommon.Scales=" .. tostring(PawnCommon and PawnCommon.Scales ~= nil) .. " -> " .. tostring(G.HasPawn()))
+        if G.HasPawn() then print("  Pawn scales: " .. table.concat(G.Pawn.Scales(), ", ")) end
+        print("  Naowh: NaowhForever=" .. type(_G.NaowhForever) .. " kept=" .. tostring(nf ~= nil) .. " StatWeights=" .. tostring(sw ~= nil)
+            .. " IsBisItem=" .. tostring(nf and nf.IsBisItem ~= nil) .. " -> " .. tostring(G.HasNaowh()))
+        if sw then
+            print("  Naowh SW: For=" .. tostring(sw.For ~= nil) .. " ActiveSpec=" .. tostring(sw.ActiveSpec ~= nil) .. " Stats=" .. tostring(sw.Stats ~= nil)
+                .. " Worth=" .. tostring(sw.Worth ~= nil) .. " DpsShare=" .. tostring(sw.DpsShare ~= nil))
+        end
+        local s = G.Scorer()
+        print("  rating with: " .. (s and s.key or "item level") .. " (setting " .. tostring(ns.db.source) .. ")")
     elseif cmd == "version" then
         ns.Print("Version %s. Seen in the group:", ns.VERSION)
         for name, d in pairs(ns.members or {}) do

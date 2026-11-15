@@ -2,6 +2,9 @@
 
 ## v0.2.0
 
+- **Fix:** Pawn was never found ("not found" in the settings) and drops were rated by item level
+  only. Pawn keeps its ready state to itself; GearShare now asks `PawnIsReady()`.
+- `/gs debug` shows what GearShare finds of Pawn and Naowh Forever.
 - **Minimap button**: left click loot window, right click group gear, middle or
   shift-click settings; drag it round the minimap. `/gs minimap on|off`.
 - **Settings** (`/gs options`, also under *Options → AddOns → GearShare*):
