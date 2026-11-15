@@ -337,6 +337,10 @@ SHIFT = true
 Click(GearShareMinimapButton, "LeftButton")
 SHIFT = false
 check(GearShareOptionsFrame and GearShareOptionsFrame:IsShown(), "shift click: settings")
+Click(GearShareMinimapButton, "MiddleButton")
+check(not GearShareOptionsFrame:IsShown(), "middle click: settings (closed again)")
+Click(GearShareMinimapButton, "MiddleButton")
+check(GearShareOptionsFrame:IsShown(), "and open again")
 local opts = AllText(GearShareOptionsFrame)
 check(opts:find("100 %", 1, true) and opts:find("15 min", 1, true), "sliders show their values")
 -- find the controls by their label

@@ -38,7 +38,7 @@ Made for **World of Warcraft: Forever**. English and German.
 | `/gs test` | a made-up drop with made-up members, to try it out alone |
 | `/gs options` | settings: window sizes, minimap button, lock windows, … |
 
-Minimap button: left click opens the loot window, right click the group gear, shift-click the settings.
+Minimap button: left click opens the loot window, right click the group gear, middle or shift-click the settings.
 
 ## Source
 

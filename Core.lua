@@ -205,7 +205,7 @@ end
 -- Addon list button (the compartment in the minimap corner)
 -- Clicks on the minimap button and the addon list button
 function ns.HandleClick(button)
-    if IsShiftKeyDown and IsShiftKeyDown() then
+    if button == "MiddleButton" or (IsShiftKeyDown and IsShiftKeyDown()) then
         ns.Options:Toggle()
     elseif button == "RightButton" then
         ns.GroupWindow:Toggle()

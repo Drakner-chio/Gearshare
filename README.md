@@ -51,7 +51,7 @@ Everyone in the group needs GearShare. Pawn is strongly recommended.
 | `/gs minimap on\|off` | show or hide the minimap button |
 
 Minimap button and addon list button: left click opens the loot window, right click
-the group gear, shift-click the settings. The settings are also under
+the group gear, middle or shift-click the settings. The settings are also under
 *Options → AddOns → GearShare*.
 
 ## Language

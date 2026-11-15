@@ -2,8 +2,8 @@
 
 ## v0.2.0
 
-- **Minimap button**: left click loot window, right click group gear, shift-click
-  settings; drag it round the minimap. `/gs minimap on|off`.
+- **Minimap button**: left click loot window, right click group gear, middle or
+  shift-click settings; drag it round the minimap. `/gs minimap on|off`.
 - **Settings** (`/gs options`, also under *Options → AddOns → GearShare*):
   - loot window: open by itself, hide players who can't use the item, size,
     height before older drops are hidden, how long drops stay
