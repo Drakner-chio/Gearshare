@@ -55,7 +55,8 @@ The key binding works in its windows because they show normal item tooltips.
 The same as Gatherline: **Actions → Release → Run workflow** with a version like
 `0.1.0` or `0.1.0-beta1`. Before the first CurseForge upload, put
 `## X-Curse-Project-ID: …` into `GearShare.toc` and the `CF_API_KEY` secret into
-the repo. On CurseForge, set Pawn as an *optional dependency*.
+the repo. The optional dependencies on CurseForge (Pawn, Naowh Forever, OneForAll) come from
+`.pkgmeta` with every release; GearShare has no required ones.
 
 ## Tests
 

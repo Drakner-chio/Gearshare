@@ -5,7 +5,7 @@
 ## Author: Drakner-chio
 ## Version: @project-version@
 ## IconTexture: Interface\AddOns\GearShare\media\Logo
-## OptionalDeps: Pawn, NaowhForever, NaowhForever_BiS
+## OptionalDeps: Pawn, NaowhForever, NaowhForever_BiS, OneForAll
 ## SavedVariables: GearShareDB
 ## SavedVariablesPerCharacter: GearShareCharDB
 ## AddonCompartmentFunc: GearShare_OnCompartmentClick

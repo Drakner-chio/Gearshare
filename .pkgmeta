@@ -6,6 +6,13 @@ manual-changelog:
 
 # No libraries and no externals: building a release downloads nothing.
 
+# CurseForge relations, sent with every release (CurseForge project slugs).
+# GearShare needs none of them; each adds something when it is there.
+optional-dependencies:
+  - pawn                # stat weights for the rating
+  - naowhforever        # BiS stars, its stat weights
+  - oneforall-forever   # its wishlist counts too
+
 ignore:
   - README.md
   - docs
