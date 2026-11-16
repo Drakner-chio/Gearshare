@@ -209,7 +209,7 @@ check(d.results.Alex and d.results.Alex.status == "U", "and I rated it")
 local sentE
 for _, m in ipairs(SENT) do if m.text:sub(1, 2) == "E^" then sentE = m end end
 check(sentE and sentE.channel == "PARTY", "my verdict went to the party")
-check(sentE.text == "E^item:101^U^20.0^3^Scale B^^", "as one short line: " .. tostring(sentE and sentE.text))
+check(sentE.text == "E^item:101^U^20.0^3^Scale B^^^", "as one short line: " .. tostring(sentE and sentE.text))
 check(GearShareLootFrame and GearShareLootFrame:IsShown(), "the loot window opened by itself")
 
 -- the others answer (Thrall's client saw the drop with his own level and spec)
@@ -263,6 +263,73 @@ ns.db.minQuality = 2
 ns.LootWindow:Refresh()
 RunTimers(1)
 check(AllText(GearShareLootFrame):find("Green Gloves", 1, true), "uncommon and up: there it is")
+
+---------------------------------------------------------------------------
+STEP("wishlist")
+FireEvent("PLAYER_LOGIN")
+local Wish = ns.Wish
+local bootsLink = MakeLink("item:130::::::::30:71")
+HandleModifiedItemClick(bootsLink)
+check(not Wish.On(130), "a plain click does nothing")
+CTRL, ALT = true, true
+HandleModifiedItemClick(bootsLink)
+check(Wish.On(130) == "gs", "Ctrl+Alt+click: on the wishlist")
+check(GearShareCharDB.wish[130].slot == 8, "with its slot")
+HandleModifiedItemClick(bootsLink)
+check(not Wish.On(130), "again: off")
+-- from the game's journal: the boss comes along
+EncounterJournal = CreateFrame("Frame", "EncounterJournal")
+EncounterJournal.instanceID, EncounterJournal.encounterID = 63, 89
+JOURNAL = { instance = "The Deadmines", boss = "Sneed" }
+HandleModifiedItemClick(bootsLink)
+CTRL, ALT = false, false
+EncounterJournal:Hide()
+JOURNAL = nil
+check(Wish.SourceOf(130).instance == "The Deadmines" and Wish.SourceOf(130).boss == "Sneed", "the journal tells where from")
+-- key binding over a tooltip
+TOOLTIP_ITEM = MakeLink("item:112::::::::30:71")
+GameTooltip.__shown = true
+GearShare_WishHovered()
+check(Wish.On(112) == "gs", "the key binding takes the item under the mouse")
+check(Wish.SourceOf(112) == nil, "where from: not known")
+-- tooltip line
+check(ShowTooltipFor(bootsLink):find("On your wishlist (GearShare)", 1, true), "a line on the tooltip")
+check(not ShowTooltipFor(MakeLink("item:101")):find("wishlist", 1, true), "not on items off the list")
+-- OneForAll's wishlist counts too
+OneForAllCharDB = { wishlist = { [123] = true, ["ench:1"] = true } }
+check(Wish.On(123) == "ofa", "OneForAll's wishlist counts")
+check(ShowTooltipFor(MakeLink("item:123")):find("(OneForAll)", 1, true), "and says so on the tooltip")
+ns.db.useOneForAll = false
+check(not Wish.On(123), "unless switched off")
+ns.db.useOneForAll = true
+-- it's in my verdict and in everyone's ranking
+check(eval(130).wish == 1 and eval(101).wish == nil, "verdicts say wish")
+SENT = {}
+Comm.Receive("C^item:130", "Varian")
+RunTimers(2)
+check(SENT[1] and SENT[1].text:find("%^1$"), "and send it: " .. tostring(SENT[1] and SENT[1].text))
+Comm.Receive("E^item:130^U^5.0^2^Arms^^^1", "Varian")
+local bootsDrop = Loot.byKey["130:0:"]
+check(bootsDrop.results.Varian.wish == 1, "a wish arrives")
+check(Loot.BisTag(bootsDrop.results.Varian):find("wish", 1, true), "and shows as a star")
+-- learning where drops come from
+IN_INSTANCE = "Shadowfang Keep"
+FireEvent("ENCOUNTER_END", 1, "Arugal", 1, 5, 1)
+ROLLS[9] = { "item:112::::::::30:71" }
+FireEvent("START_LOOT_ROLL", 9, 60000)
+RunTimers(1)
+IN_INSTANCE = nil
+check(Wish.SourceOf(112).instance == "Shadowfang Keep" and Wish.SourceOf(112).boss == "Arugal", "a drop teaches where it comes from")
+-- the window
+SlashCmdList.GEARSHARE("wish")
+local wt = AllText(GearShareWishFrame)
+check(GearShareWishFrame:IsShown(), "/gs wish opens the window")
+check(wt:find("THE DEADMINES  ·  SNEED", 1, true) and wt:find("SHADOWFANG KEEP  ·  ARUGAL", 1, true), "grouped by instance and boss")
+check(wt:find("Boots", 1, true) and wt:find("New Ring", 1, true) and wt:find("Big Shield", 1, true) and wt:find("(OneForAll)", 1, true), "mine and OneForAll's")
+SlashCmdList.GEARSHARE("wish " .. MakeLink("item:112::::::::30:71"))
+check(not Wish.On(112), "/gs wish [item]: off again")
+check(not AllText(GearShareWishFrame):find("Shadowfang", 1, true), "and the window follows")
+OneForAllCharDB = nil
 
 ---------------------------------------------------------------------------
 STEP("posting the ranking")

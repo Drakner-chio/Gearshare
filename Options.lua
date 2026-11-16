@@ -82,16 +82,20 @@ local function Build()
 
     -- General
     y = y - 74
-    local gen = T.Card(frame, "General", PAD, y, cw, 118)
+    local gen = T.Card(frame, "General", PAD, y, cw, 146)
     controls[#controls + 1] = T.Switch(gen, "Minimap button", 16, -34,
         function() return ns.db.minimapButton end,
         function(v) ns.db.minimapButton = v; ns.UpdateMinimapButton() end)
+    controls[#controls + 1] = T.Switch(gen, "Use OneForAll's wishlist too", 16, -86,
+        function() return ns.db.useOneForAll end,
+        function(v) ns.db.useOneForAll = v; ns.Wish.Changed() end)
     controls[#controls + 1] = T.Switch(gen, "Lock windows (no dragging)", 16, -60,
         function() return ns.db.locked end, function(v) ns.db.locked = v end)
     local reset = T.FlatButton(gen, "Reset window positions", 170, 22)
-    reset:SetPoint("TOPLEFT", 16, -84)
+    reset:SetPoint("TOPLEFT", 16, -112)
     reset:SetScript("OnClick", function()
-        ns.db.lootPos, ns.db.groupPos = nil, nil
+        ns.db.lootPos, ns.db.groupPos, ns.db.wishPos = nil, nil, nil
+        ns.WishWindow:ApplySettings(true)
         ns.LootWindow:ApplySettings(true)
         ns.GroupWindow:ApplySettings(true)
     end)
@@ -104,7 +108,7 @@ local function Build()
     hint:SetText("/gs options  ·  /gs help  ·  v" .. tostring(ns.VERSION))
     hint:SetPoint("BOTTOMLEFT", PAD + 2, 12)
 
-    frame:SetHeight(-y + 118 + 40)
+    frame:SetHeight(-y + 146 + 40)
     frame:SetScript("OnShow", function() O:Refresh() end)
 end
 
@@ -163,6 +167,7 @@ local function BuildButton()
         GameTooltip:AddLine(L["Left-click: loot window"], 1, 1, 1)
         GameTooltip:AddLine(L["Right-click: group gear"], 1, 1, 1)
         GameTooltip:AddLine(L["Middle or shift-click: settings"], 1, 1, 1)
+        GameTooltip:AddLine(L["Ctrl-click: wishlist"], 1, 1, 1)
         GameTooltip:AddLine(L["Drag: move this button"], C.muted[1], C.muted[2], C.muted[3])
         GameTooltip:Show()
     end)

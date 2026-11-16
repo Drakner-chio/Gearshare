@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding name="GEARSHARE_WISH" header="GEARSHARE" category="ADDONS">
+        GearShare_WishHovered()
+    </Binding>
+</Bindings>

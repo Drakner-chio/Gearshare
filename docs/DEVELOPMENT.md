@@ -9,6 +9,9 @@
 | `Comm.lua` | addon messages (queue that waits for the end of combat and retries) |
 | `Loot.lua` | drops, verdicts, the ranking, posting to chat, `/gs test` |
 | `LootWindow.lua`, `GroupWindow.lua` | the two windows |
+| `Wishlist.lua` | the wishlist (`GearShareCharDB.wish`), Ctrl+Alt+click, key binding, tooltip line, OneForAll's wishlist, where items come from |
+| `WishWindow.lua` | the wishlist window |
+| `Bindings.xml` | the key binding "item under the mouse" |
 | `Options.lua` | settings window, minimap button, entry in the game's AddOns settings |
 | `Theme.lua` | the look (same style as Gatherline, violet accent) |
 | `Locale*.lua` | English keys, German translations |
@@ -19,7 +22,7 @@
 |---|---|
 | `H^<protocol>^<version>` | hello. Everyone answers with their gear |
 | `G^<slot>:<itemID>:<ilvl>:<score>;…` | (part of) the sender's gear. `score` = best Pawn score, empty without Pawn |
-| `E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>^<bis>` | the sender's verdict on a drop; `bis` = rank on their Naowh BiS list (since 0.2.0, older versions send 7 fields) |
+| `E^<item>^<status>^<pct>^<ilvl>^<scale>^<reason>^<bis>^<wish>` | the sender's verdict on a drop; `bis` = rank on their Naowh BiS list, `wish` = 1 when on their wishlist (both since 0.2.0, older versions send 7 fields) |
 | `C^<item>` | please rate this item (`/gs check`) |
 
 `<item>` is an item string with unique ID, level and spec removed, so it's the
@@ -40,6 +43,12 @@ BiS list, nil when off or not on it) and `StatWeights.For`, `.ActiveSpec`, `.Spe
 `.Worth`, `.DpsShare`, `.Usable`. Naowh's own upgrade percent (`StatWeights.Gain`) is over the
 whole character, so GearShare doesn't use it: it takes `Worth` of the new item and of what is
 worn in the slot, like Pawn's values.
+
+## OneForAll
+
+OneForAll keeps its namespace private and handles its own item clicks, so GearShare reads
+only its saved wishlist (`OneForAllCharDB.wishlist`, `[itemID] = true`) and never writes it.
+The key binding works in its windows because they show normal item tooltips.
 
 ## Releasing
 

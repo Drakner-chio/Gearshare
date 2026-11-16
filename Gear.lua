@@ -290,13 +290,15 @@ end
 --   slot    the slot it would go into
 --   reason  for "X": "need" (can't roll need) or "armor" (not for you)
 --   bis     its rank on my Naowh BiS list (1 = BiS), or nil
+--   wish    1 when it's on my wishlist (GearShare's or OneForAll's), or nil
 ---------------------------------------------------------------------------
 function G.Evaluate(link, canNeed)
     local equipLoc = G.EquipLoc(link)
     local slots = G.SlotsFor(equipLoc)
     if not slots then return { status = "-" } end
     local bis = G.BisRank(link)
-    if canNeed == false then return { status = "X", reason = "need", slot = slots[1], bis = bis } end
+    local wish = ns.Wish and ns.Wish.On(G.ItemID(link)) and 1 or nil
+    if canNeed == false then return { status = "X", reason = "need", slot = slots[1], bis = bis, wish = wish } end
 
     local newIlvl = G.ItemLevel(link)
     if not newIlvl then return nil, "wait" end
@@ -306,7 +308,7 @@ function G.Evaluate(link, canNeed)
     if #scales == 0 then scorer = nil end
     if scorer then
         local usable = scorer.Usable(link)
-        if usable == false then return { status = "X", reason = "armor", slot = slots[1], bis = bis } end
+        if usable == false then return { status = "X", reason = "armor", slot = slots[1], bis = bis, wish = wish } end
     end
 
     -- What is worn in the slots this item could take: per slot { ilvl, values, id } or false
@@ -377,7 +379,7 @@ function G.Evaluate(link, canNeed)
         old = best and best.e or false
     end
 
-    local result = { slot = slot, bis = bis }
+    local result = { slot = slot, bis = bis, wish = wish }
     if not old then
         result.status = "E"
         result.ilvl = newIlvl

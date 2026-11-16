@@ -184,6 +184,7 @@ function Loot.OnRoll(rollID)
         if quality then d.quality = quality end
     end
     d.rollID = rollID
+    if ns.Wish then ns.Wish.Learn(ns.Gear.ItemID(link)) end
     Loot.RateMine(d, true)
     ShowWindow(d)
     Refresh()
@@ -271,10 +272,16 @@ end
 
 -- "★ BiS" / "★ 2" after a name, for a drop on that player's Naowh BiS list
 function Loot.BisTag(r)
-    if not (r and r.bis) then return "" end
+    if not r then return "" end
     local star = "|A:auctionhouse-icon-favorite:12:12|a"
-    if r.bis == 1 then return " " .. star .. "|cffff8a1aBiS|r" end
-    return " " .. star .. "|cffc0c4cc" .. L["%d. pick"]:format(r.bis) .. "|r"
+    local out = ""
+    if r.bis == 1 then
+        out = " " .. star .. "|cffff8a1aBiS|r"
+    elseif r.bis then
+        out = " " .. star .. "|cffc0c4cc" .. L["%d. pick"]:format(r.bis) .. "|r"
+    end
+    if r.wish then out = out .. " " .. star .. "|cff9d7bff" .. L["wish"] .. "|r" end
+    return out
 end
 
 -- "+6.1 %", "+12 ilvl", "empty slot" ... for one verdict
@@ -299,6 +306,7 @@ function Loot:Announce(d)
     for _, e in ipairs(Loot.Ranking(d)) do
         if e.kind == "E" or e.kind == "U" then
             local bis = e.r.bis == 1 and " (BiS)" or (e.r.bis and (" (BiS #" .. e.r.bis .. ")")) or ""
+            if e.r.wish then bis = bis .. " (" .. L["wish"] .. ")" end
             parts[#parts + 1] = e.name:gsub("%-.*$", "") .. bis .. " " .. Loot.Describe(e.r)
         end
     end

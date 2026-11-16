@@ -7,6 +7,7 @@
 ## IconTexture: Interface\AddOns\GearShare\media\Logo
 ## OptionalDeps: Pawn, NaowhForever, NaowhForever_BiS
 ## SavedVariables: GearShareDB
+## SavedVariablesPerCharacter: GearShareCharDB
 ## AddonCompartmentFunc: GearShare_OnCompartmentClick
 ## X-License: MIT
 ## X-Curse-Project-ID: 1804590
@@ -22,4 +23,6 @@ Comm.lua
 Loot.lua
 LootWindow.lua
 GroupWindow.lua
+Wishlist.lua
+WishWindow.lua
 Options.lua

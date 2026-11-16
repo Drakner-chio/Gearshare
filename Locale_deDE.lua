@@ -104,4 +104,23 @@ ns.TRANSLATIONS.deDE = {
     ["Rare"] = "Rar",
     ["Epic"] = "Episch",
     ["Lower drops are still rated for the group, they just don't open or show up in your window."] = "Schwächere Drops werden für die Gruppe trotzdem bewertet, sie öffnen und erscheinen nur nicht in deinem Fenster.",
+
+    -- Wunschliste
+    ["Wishlist"] = "Wunschliste",
+    ["wish"] = "Wunsch",
+    ["On your wishlist: %s"] = "Auf deiner Wunschliste: %s",
+    ["Off your wishlist: %s"] = "Von deiner Wunschliste genommen: %s",
+    ["Hover an item first, then press the key."] = "Erst mit der Maus auf ein Item zeigen, dann die Taste drücken.",
+    ["On your wishlist (OneForAll)"] = "Auf deiner Wunschliste (OneForAll)",
+    ["On your wishlist (GearShare)"] = "Auf deiner Wunschliste (GearShare)",
+    ["Item under the mouse: on/off the wishlist"] = "Item unter der Maus: auf/von der Wunschliste",
+    ["Profession: %s"] = "Beruf: %s",
+    ["Where from: not known yet"] = "Herkunft noch unbekannt",
+    ["you have it"] = "hast du",
+    ["From OneForAll's wishlist: remove it there (Armory > Gear Planner)."] = "Aus der Wunschliste von OneForAll: dort entfernen (Waffenkammer > Ausrüstungsplaner).",
+    ["Your wishlist is empty. Ctrl+Alt+click an item (bags, chat, journal, AtlasLoot, professions), or hover it and press your GearShare key (Key Bindings > AddOns). OneForAll's wishlist shows up here by itself."] = "Deine Wunschliste ist leer. Strg+Alt+Klick auf ein Item (Taschen, Chat, Journal, AtlasLoot, Berufe), oder mit der Maus darauf zeigen und deine GearShare-Taste drücken (Tastaturbelegung > AddOns). Die Wunschliste von OneForAll erscheint hier von selbst.",
+    ["Ctrl+Alt+click: on/off"] = "Strg+Alt+Klick: auf/von der Liste",
+    ["your wishlist; with an item: on/off the list"] = "deine Wunschliste; mit Item: auf/von der Liste",
+    ["Use OneForAll's wishlist too"] = "OneForAll-Wunschliste mitnutzen",
+    ["Ctrl-click: wishlist"] = "Strg-Klick: Wunschliste",
 }

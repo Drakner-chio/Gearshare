@@ -2,6 +2,19 @@
 
 ## v0.2.0
 
+- **Wishlist** (`/gs wish`, Ctrl-click on the minimap button):
+  - **Ctrl+Alt+click** an item to put it on (or off) your wishlist: bags, chat links,
+    character panel, the game's journal, professions, and loot addons that hand clicks on
+    to the game (AtlasLoot)
+  - a **key binding** (Key Bindings → AddOns → GearShare) for the item under the mouse:
+    works over every item tooltip, also in OneForAll
+  - **OneForAll's wishlist** (Armory → Gear Planner) counts too, read straight from it
+    (switch in the settings)
+  - the window groups the list by **instance and boss**, **profession** or "not known
+    yet". Where an item comes from is taken from the journal or profession window you add
+    it from, and learned when it drops (the instance, and the boss killed just before)
+  - a line on the item's tooltip, and a **★ wish** next to your name in everyone's ranking
+    when it drops (also in the chat post)
 - **Fix:** Pawn was never found ("not found" in the settings) and drops were rated by item level
   only. Pawn keeps its ready state to itself; GearShare now asks `PawnIsReady()`.
 - `/gs debug` shows what GearShare finds of Pawn and Naowh Forever.

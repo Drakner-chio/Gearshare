@@ -11,6 +11,7 @@
 - **No Pawn score?** Then the item level decides (many trinkets)
 - **Naowh Forever:** drops on someone's Naowh BiS list get a ★ in the ranking, and Naowh's Stat Weights can rate drops instead of Pawn
 - **Post** the ranking to party or raid chat with one click
+- **Wishlist** (`/gs wish`): Ctrl+Alt+click any item, or hover it and press your GearShare key – grouped by instance and boss; OneForAll's wishlist counts too. Wished drops get a ★ in everyone's ranking
 - **Group gear** (`/gs gear`): everyone's gear slot by slot, with each player's weakest slots marked
 
 Made for **World of Warcraft: Forever**. English and German.

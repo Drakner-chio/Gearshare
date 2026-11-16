@@ -23,6 +23,7 @@ local DEFAULTS = {
     minimapButton = true,
     minimapAngle = 215,
     minQuality = 2,        -- drops from this quality on are listed (2 uncommon, 3 rare, 4 epic)
+    useOneForAll = true,   -- OneForAll's wishlist counts as mine
     source = "auto",       -- rate with: "auto" (Pawn, else Naowh), "pawn", "naowh"
 }
 
@@ -150,6 +151,7 @@ local function Help()
     print("  /gs auto on|off  – " .. L["open the loot window by itself when something drops"])
     print("  /gs clear  – " .. L["empty the loot window"])
     print("  /gs test  – " .. L["a made-up drop with made-up members, to try the window"])
+    print("  /gs wish [item]  – " .. L["your wishlist; with an item: on/off the list"])
     print("  /gs options  – " .. L["settings: size, minimap button, ..."])
     print("  /gs minimap on|off  – " .. L["show or hide the minimap button"])
 end
@@ -180,6 +182,15 @@ SlashCmdList.GEARSHARE = function(msg)
             return
         end
         ns.Loot:Check(itemString)
+    elseif cmd == "wish" or cmd == "wunsch" then
+        local itemString = rest:match("|H(item:[^|]+)|h") or rest:match("(item:[%-%d:]+)")
+        if itemString then
+            local info = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+            local _, full = info(itemString)
+            ns.Wish.Toggle(full or itemString)
+        else
+            ns.WishWindow:Toggle()
+        end
     elseif cmd == "options" or cmd == "config" or cmd == "settings" then
         ns.Options:Toggle()
     elseif cmd == "minimap" then
@@ -223,6 +234,8 @@ end
 function ns.HandleClick(button)
     if button == "MiddleButton" or (IsShiftKeyDown and IsShiftKeyDown()) then
         ns.Options:Toggle()
+    elseif IsControlKeyDown and IsControlKeyDown() then
+        ns.WishWindow:Toggle()
     elseif button == "RightButton" then
         ns.GroupWindow:Toggle()
     else

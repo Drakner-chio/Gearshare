@@ -37,6 +37,16 @@ scales**, and every GearShare in the group shows the same ranking:
 
 Everyone in the group needs GearShare. Pawn is strongly recommended.
 
+## Wishlist
+
+`/gs wish` (or Ctrl-click on the minimap button) shows your wishlist, grouped by instance
+and boss, profession, or "not known yet". **Ctrl+Alt+click** an item to put it on or off:
+in bags, chat, the character panel, the game's journal, professions, and loot addons that
+hand clicks on to the game (AtlasLoot). Over any item tooltip, the key binding *GearShare →
+Item under the mouse* does the same (also in OneForAll, which keeps its clicks). OneForAll's
+own wishlist counts too. When a wished item drops, your name gets a ★ wish in everyone's
+ranking.
+
 ## Commands
 
 | Command | |
@@ -47,6 +57,7 @@ Everyone in the group needs GearShare. Pawn is strongly recommended.
 | `/gs auto on\|off` | open the loot window by itself when something drops |
 | `/gs clear` | empty the loot window |
 | `/gs test` | a made-up drop with made-up members, to try the window |
+| `/gs wish [item]` | your wishlist; with an item: put it on or off |
 | `/gs options` | settings: window sizes, minimap button, lock windows, … |
 | `/gs minimap on\|off` | show or hide the minimap button |
 

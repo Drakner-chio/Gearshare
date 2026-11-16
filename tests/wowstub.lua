@@ -184,7 +184,10 @@ WORN = {}           -- [slot] = item string
 DUAL_WIELD = false
 function CanDualWield() return DUAL_WIELD end
 
-local function IdOf(link) return link and tonumber(tostring(link):match("item:(%d+)")) end
+local function IdOf(link)
+    if type(link) == "number" then return link end
+    return link and tonumber(tostring(link):match("item:(%d+)"))
+end
 function MakeLink(itemString)
     local id = IdOf(itemString)
     return "|cffa335ee|H" .. itemString .. "|h[" .. (ITEMS[id] and ITEMS[id].name or "?") .. "]|h|r"
@@ -199,7 +202,7 @@ C_Item = {
         local id = IdOf(link)
         local it = ITEMS[id]
         if not it or NOT_LOADED[id] then return nil end
-        local itemString = tostring(link):match("(item:[%-%d:]+)")
+        local itemString = type(link) == "number" and ("item:" .. link) or tostring(link):match("(item:[%-%d:]+)")
         return it.name, MakeLink(itemString), it.quality or 4, it.ilvl
     end,
     GetDetailedItemLevelInfo = function(link)
@@ -280,6 +283,39 @@ function InstallNaowh()
     }
 end
 function RemoveNaowh() NaowhForever = nil end
+
+---------------------------------------------------------------------------
+-- Clicks, tooltips, instances, the journal (for the wishlist)
+---------------------------------------------------------------------------
+function hooksecurefunc(name, fn)
+    local orig = _G[name]
+    _G[name] = function(...) local r = { orig(...) } fn(...) return unpack(r) end
+end
+function HandleModifiedItemClick(link) return false end
+CTRL, ALT = false, false
+function IsControlKeyDown() return CTRL end
+function IsAltKeyDown() return ALT end
+Enum = { TooltipDataType = { Item = 0 } }
+TOOLTIP_CALLS = {}
+TooltipDataProcessor = { AddTooltipPostCall = function(kind, fn) TOOLTIP_CALLS[#TOOLTIP_CALLS + 1] = fn end }
+TOOLTIP_ITEM = nil
+TOOLTIP_LINES = {}
+function Methods:GetItem() if self == GameTooltip and TOOLTIP_ITEM then return "x", TOOLTIP_ITEM end end
+function Methods:AddLine(text) if self == GameTooltip then TOOLTIP_LINES[#TOOLTIP_LINES + 1] = text end end
+function ShowTooltipFor(link)
+    TOOLTIP_ITEM, TOOLTIP_LINES = link, {}
+    GameTooltip.__shown = true
+    for _, fn in ipairs(TOOLTIP_CALLS) do fn(GameTooltip) end
+    return table.concat(TOOLTIP_LINES, "\n")
+end
+IN_INSTANCE = nil   -- instance name when inside one
+function IsInInstance() return IN_INSTANCE ~= nil, IN_INSTANCE and "party" or "none" end
+function GetInstanceInfo() return IN_INSTANCE end
+JOURNAL = nil       -- { instance =, boss = } when the game's journal is open
+function EJ_GetInstanceInfo() return JOURNAL and JOURNAL.instance end
+function EJ_GetEncounterInfo() return JOURNAL and JOURNAL.boss end
+C_Item.GetItemCount = function(id) return HAVE and HAVE[id] or 0 end
+function time() return 1000 end
 
 function FireEvent(event, ...)
     for _, f in ipairs(ALL_FRAMES) do
