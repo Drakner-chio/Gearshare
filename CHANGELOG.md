@@ -1,6 +1,6 @@
 # GearShare
 
-## v0.2.0
+## v0.3.0
 
 - **Wishlist** (`/gs wish`, Ctrl-click on the minimap button):
   - **Ctrl+Alt+click** an item to put it on (or off) your wishlist: bags, chat links,
@@ -18,13 +18,6 @@
 - **Fix:** Pawn was never found ("not found" in the settings) and drops were rated by item level
   only. Pawn keeps its ready state to itself; GearShare now asks `PawnIsReady()`.
 - `/gs debug` shows what GearShare finds of Pawn and Naowh Forever.
-- **Minimap button**: left click loot window, right click group gear, middle or
-  shift-click settings; drag it round the minimap. `/gs minimap on|off`.
-- **Settings** (`/gs options`, also under *Options → AddOns → GearShare*):
-  - loot window: open by itself, hide players who can't use the item, size,
-    height before older drops are hidden, how long drops stay
-  - group gear: size
-  - minimap button on/off, lock windows, reset window positions, test drop
 - **Clear** (and `/gs clear`) also closes the loot window.
 - **Which drops**: in the settings, from which quality on drops open the loot window and
   show up in it (common, uncommon, rare, epic; default uncommon). Lower drops are still
@@ -35,6 +28,18 @@
   - Naowh's Stat Weights can rate drops instead of Pawn: *Settings → Rating*
     (Automatic: Pawn, else Naowh, else item level). GearShare compares the item with what
     you wear in its slot either way, so Pawn and Naowh users fit one ranking
+- Minimap button: middle click opens the settings too, Ctrl-click the wishlist.
+- Releases are tagged for WoW Forever only (interface 16001), not retail.
+
+## v0.2.0
+
+- **Minimap button**: left click loot window, right click group gear, shift-click
+  settings; drag it round the minimap. `/gs minimap on|off`.
+- **Settings** (`/gs options`, also under *Options → AddOns → GearShare*):
+  - loot window: open by itself, hide players who can't use the item, size,
+    height before older drops are hidden, how long drops stay
+  - group gear: size
+  - minimap button on/off, lock windows, reset window positions, test drop
 
 ## v0.1.0
 
