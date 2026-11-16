@@ -64,7 +64,20 @@ h2 em { font-style: normal; color: var(--vio); }
 .row .v { text-align: right; font-weight: 600; }
 .g { color: var(--good); } .b { color: var(--bad); } .m { color: var(--muted); } .f { color: var(--faint); }
 .dim { opacity: .55; }
+.star { display: inline-block; width: 11px; height: 11px; margin: 0 3px 0 7px; vertical-align: -1px;
+        background: currentColor; clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.bis { color: #ff8a1a; font-size: 11.5px; font-weight: 600; }
+.wish { color: var(--vio); font-size: 11.5px; font-weight: 600; }
 .c-sha { color: var(--shaman); } .c-war { color: var(--warrior); } .c-mag { color: var(--mage); } .c-pri { color: var(--priest); } .c-pal { color: var(--paladin); }
+
+/* wishlist (banner 5) */
+.wl { display: flex; align-items: center; height: 27px; padding: 0 12px; font-size: 13px; color: var(--ink); }
+.wl.h { background: rgba(255,255,255,.04); color: var(--vio); font-size: 11.5px; letter-spacing: .6px; justify-content: space-between; height: 25px; }
+.wl.h span:last-child { color: var(--faint); }
+.wl .ic { width: 18px; height: 18px; margin-right: 10px; }
+.wl .sl { margin-left: auto; color: var(--faint); font-size: 11.5px; padding-right: 10px; }
+.wl .x2 { color: var(--muted); width: 12px; text-align: center; }
+.tip { width: 250px; background: rgba(8,10,14,.95); border: 1px solid #3a3f48; padding: 10px 12px; font-size: 13px; line-height: 1.55; color: var(--ink); box-shadow: 0 14px 34px rgba(0,0,0,.55); }
 
 /* chat and chips */
 .chatbox { background: rgba(0,0,0,.45); border: 1px solid #22252b; padding: 12px 16px; font-size: 14px; line-height: 1.7; color: #e9e9e9; text-shadow: 0 1px 2px #000; }
@@ -121,8 +134,8 @@ table.gear tr.avg td.l { color: var(--ink); font-weight: 400; }
           <div class="top"><div class="ico helm"></div>
             <div class="nm"><b>[Helm of the Stormcaller]</b><span>Head · just now</span></div>
             <span class="btn">Post</span></div>
-          <div class="row win1"><span class="c-sha">Thrall</span><span class="sc">Enhancement  +6 ilvl</span><span class="v g">+8.4 %</span></div>
-          <div class="row"><span class="c-war">Alex</span><span class="sc">Arms  +3 ilvl</span><span class="v g">+3.2 %</span></div>
+          <div class="row win1"><span><span class="c-sha">Thrall</span><span class="bis"><span class="star"></span>BiS</span></span><span class="sc">Enhancement  +6 ilvl</span><span class="v g">+8.4 %</span></div>
+          <div class="row"><span><span class="c-war">Alex</span><span class="wish"><span class="star"></span>wish</span></span><span class="sc">Arms  +3 ilvl</span><span class="v g">+3.2 %</span></div>
           <div class="row"><span class="c-pal">Uther</span><span class="sc">Retribution  +1 ilvl</span><span class="v g">+0.9 %</span></div>
           <div class="row"><span class="c-pri">Anduin</span><span class="sc">Holy  -2 ilvl</span><span class="v m">-4.0 %</span></div>
           <div class="row"><span class="c-mag dim">Jaina</span><span class="sc"></span><span class="v b">wrong armor</span></div>
@@ -233,11 +246,44 @@ table.gear tr.avg td.l { color: var(--ink); font-weight: 400; }
       <div class="f2"><i>Fair</i><b>Like for like</b><span>Rings against your weaker ring, two-handers against both hands.</span></div>
       <div class="f2"><i>Honest</i><b>Can't use it?</b><span>Can't roll need or wrong armor type – it says so.</span></div>
       <div class="f2"><i>Fallback</i><b>No Pawn score?</b><span>Then the item level decides, as for many trinkets.</span></div>
-      <div class="f2"><i>Quiet</i><b>Waits for combat</b><span>Messages go out after the fight, as the game wants.</span></div>
+      <div class="f2"><i>Yours</i><b>Your settings</b><span>From which quality on, window sizes, minimap button, Pawn or Naowh.</span></div>
     </div>
   </div>
 </div></section>
 
+
+<!-- 5: the wishlist -->
+<section class="banner" id="b5"><div class="card" style="grid-template-columns: 420px 1fr;">
+  <div class="brand"><img src="../../media/icon-400.png"><span>GearShare</span></div>
+  <div class="left">
+    <div class="pill">Wishlist</div>
+    <h2 style="font-size:46px">Wish it once, <em>see it drop.</em></h2>
+    <p class="lead"><b style="color:var(--ink)">Ctrl+Alt+click</b> any item – bags, chat, journal, loot addons – or hover it and press your key. Sorted by instance and boss, and starred in everyone's ranking when it drops.</p>
+    <p class="foot">OneForAll's wishlist counts too · /gs wish</p>
+  </div>
+  <div class="right" style="gap:22px">
+    <div class="win" style="width:400px">
+      <div class="head"><img src="../../media/icon-400.png"><b>GearShare</b><i>Wishlist</i><span class="x">×</span></div>
+      <div class="body" style="padding:8px 0 6px; gap:0">
+        <div class="wl h"><span>THE DEADMINES  ·  SNEED</span><span>2</span></div>
+        <div class="wl"><span class="ic ico helm"></span><span style="color:var(--epic)">Helm of the Stormcaller</span><span class="sl">Head</span><span class="x2">×</span></div>
+        <div class="wl"><span class="ic ico ring"></span><span style="color:var(--rare)">Band of Quiet Embers</span><span class="sl">Ring</span><span class="x2">×</span></div>
+        <div class="wl h"><span>SHADOWFANG KEEP  ·  ARUGAL</span><span>1</span></div>
+        <div class="wl"><span class="ic ico"></span><span style="color:var(--epic)">Cloak of the Lost Moon</span><span class="sl">Back</span><span class="x2">×</span></div>
+        <div class="wl h"><span>PROFESSION: BLACKSMITHING</span><span>1</span></div>
+        <div class="wl"><span class="ic ico helm"></span><span style="color:var(--good)">Copper Chain Vest</span> <span class="g" style="font-size:11.5px;margin-left:6px">you have it</span><span class="sl">Chest</span><span class="x2">×</span></div>
+        <div class="wl h"><span>WHERE FROM: NOT KNOWN YET</span><span>2</span></div>
+        <div class="wl"><span class="ic ico ring"></span><span style="color:var(--rare)">Ember-Touched Signet</span><span class="f" style="font-size:11.5px;margin-left:6px">(OneForAll)</span><span class="sl">Ring</span><span></span></div>
+        <div class="wl"><span class="ic ico"></span><span style="color:var(--rare)">Stoneshield Bracers</span><span class="sl">Wrist</span><span class="x2">×</span></div>
+      </div>
+      <div class="bar"><span class="f" style="font-size:11.5px">Ctrl+Alt+click: on/off</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-self:center">
+      <div class="tip"><b style="color:var(--epic)">Helm of the Stormcaller</b><br><span class="m">Mail · Head</span><br>+9 Agility · +7 Stamina<br><span class="wish" style="font-size:13px"><span class="star" style="margin-left:0"></span> On your wishlist (GearShare)</span></div>
+      <div class="chip">dropped: <span class="c-war" style="margin-left:4px">Alex</span><span class="wish"><span class="star"></span>wish</span> <b style="margin-left:6px">+3.2 %</b></div>
+    </div>
+  </div>
+</div></section>
 </div>
 </body>
 </html>
